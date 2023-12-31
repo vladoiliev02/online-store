@@ -59,6 +59,7 @@ func initServer() {
 		UserEndpoint: "https://www.googleapis.com/oauth2/v3/userinfo",
 	}
 	securityConfig := security.NewSecurityConfiguration(router, oauthConfig, sessionStoreKey)
+	fs := http.FileServer(http.Dir("./static"))
 
 	router = chi.NewMux()
 
@@ -68,6 +69,7 @@ func initServer() {
 	router.Use(middleware.Recoverer)
 
 	securityConfig.ConfigureRouter(router)
+	router.Mount("/static", http.StripPrefix("/static/", fs))
 	router.Mount("/api/v1", controller.Router())
 }
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
+</head>
+
+<body class="center-items">
+  <input type="text" id="search" placeholder="Search products">
+  <button id="searchButton">Search</button>
+  <button id="categoryButton">Choose Categories</button>
+
+  <div id="categoryModal" class="modal">
+    <div class="modal-content">
+      <button id="closeCategories">Done</button>
+      <p>Select Categories:</p>
+      <input type="checkbox" id="Home" name="category" value="Home">
+      <label for="Home">Home</label><br>
+      <input type="checkbox" id="Clothing" name="category" value="Clothing">
+      <label for="Clothing">Clothing</label><br>
+      <input type="checkbox" id="Shoes" name="category" value="Shoes">
+      <label for="Shoes">Shoes</label><br>
+      <input type="checkbox" id="Sport" name="category" value="Sport">
+      <label for="Sport">Sport</label><br>
+      <input type="checkbox" id="Appliances" name="category" value="Appliances">
+      <label for="Appliances">Appliances</label><br>
+      <input type="checkbox" id="Technology" name="category" value="Technology">
+      <label for="Technology">Technology</label><br>
+      <input type="checkbox" id="Entertainment" name="category" value="Entertainment">
+      <label for="Entertainment">Entertainment</label><br>
+      <input type="checkbox" id="Books" name="category" value="Books">
+      <label for="Books">Books</label><br>
+      <input type="checkbox" id="Cars" name="category" value="Cars">
+      <label for="Cars">Cars</label><br>
+    </div>
+  </div>
+
+  <button id="profile">
+    <img id="profilePic" src="" alt="Profile Picture">
+    View Profile
+  </button>
+  
+  <div id="products">
+
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+
+</html>
