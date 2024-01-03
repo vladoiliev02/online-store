@@ -21,7 +21,7 @@ const (
 	updateItem = `
 		UPDATE items
 		SET order_id = $1, quantity = $2, price_units = $3, price_currency = $4
-		WHERE id = $6
+		WHERE id = $5
 		RETURNING id, product_id, order_id, quantity, price_units, price_currency
 	`
 

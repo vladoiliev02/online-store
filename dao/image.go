@@ -1,19 +1,23 @@
 package dao
 
-import "online-store/model"
+import (
+	"online-store/model"
+)
 
 const (
 	selectImages = `
-		SELECT id, product_id, data
+		SELECT id, product_id, data, format
 		FROM product_images
 	`
 
-	selectByProductId = selectImages +
-		"WHERE product_id = $1"
+	selectByProductId = selectImages + `
+		WHERE product_id = $1
+		LIMIT $2	
+	`
 
 	insertImage = `
-		INSERT INTO images (product_id, data)
-		VALUES ($1, $2)
+		INSERT INTO product_images (product_id, data, format)
+		VALUES ($1, $2, $3)
 		RETURNING id
 	`
 
@@ -40,16 +44,16 @@ func newImageDAO(qe queryExecutor) *ImageDAO {
 	}
 }
 
-func (i *ImageDAO) GetByProductID(productID int64) ([]*model.Image, error) {
+func (i *ImageDAO) GetByProductID(productID, limit int64) ([]*model.Image, error) {
 	return executeMultiRowQuery(i.qe,
 		scanImage,
-		selectByProductId, productID)
+		selectByProductId, productID, limit)
 }
 
 func (i *ImageDAO) Create(image *model.Image) (*model.Image, error) {
 	return executeSingleRowQuery(i.qe,
 		propertyScanner(image, &image.ID),
-		insertImage, image.ProductID, image.Data)
+		insertImage, image.ProductID, image.Data, image.Format)
 }
 
 func (i *ImageDAO) Delete(id int64) error {
@@ -59,5 +63,5 @@ func (i *ImageDAO) Delete(id int64) error {
 
 func scanImage(row rowScanner) (*model.Image, error) {
 	var image model.Image
-	return propertyScanner(&image, &image.ID, &image.ProductID, &image.Data)(row)
+	return propertyScanner(&image, &image.ID, &image.ProductID, &image.Data, &image.Format)(row)
 }

@@ -41,7 +41,8 @@ CREATE TABLE products (
 CREATE TABLE product_images (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT NOT NULL,
-    data BYTEA NOT NULL,
+    data TEXT NOT NULL,
+    format VARCHAR(20) NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
@@ -70,6 +71,7 @@ CREATE TABLE orders (
     status INT NOT NULL,
     address_id BIGINT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    latest_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (address_id) REFERENCES addresses(id)
 );
@@ -89,13 +91,11 @@ CREATE TABLE items (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT NOT NULL,
     order_id BIGINT NOT NULL,
-    invoice_id BIGINT NOT NULL,
     price_units INT NOT NULL,
     price_currency INT NOT NULL,
     quantity INT NOT NULL,
     FOREIGN KEY (product_id) REFERENCES products(id),
-    FOREIGN KEY (order_id) REFERENCES orders(id),
-    FOREIGN KEY (invoice_id) REFERENCES invoices(id)
+    FOREIGN KEY (order_id) REFERENCES orders(id)
 );
 
 COMMIT;

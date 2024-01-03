@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Profile</title>
+    <link rel="stylesheet" type="text/css" href="/store/css/user.css">
+    <link rel="stylesheet" type="text/css" href="/store/css/navigation.css">
+    <script src="/store/js/navigation.js"></script>
+</head>
+
+<body>
+
+    <h1 id="name"></h1>
+    <p>First Name: <span id="firstName"></span></p>
+    <p>Last Name: <span id="lastName"></span></p>
+    <img id="pictureURL" alt="User Picture">
+    <p>Email: <span id="email"></span></p>
+    <p>Created At: <span id="createdAt"></span></p>
+
+    <div id="userActions">
+        <button id="addProduct">Add Product</button>
+        <button id="ordersButton">My Orders</button>
+    </div>
+
+    <div id="products">
+
+    </div>
+
+    <div id="create-product-modal" class="modal">
+        <div class="modal-content">
+            <label for="name">Name:</label>
+            <textarea id="nameInput"></textarea>
+
+            <label for="description">Description:</label>
+            <textarea id="description"></textarea>
+
+            <label for="price">Price:</label>
+            <input type="text" id="price" />
+
+            <label for="currency">Currency:</label>
+            <select id="currency">
+                <option value="BGN">BGN</option>
+            </select>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" />
+
+            <div id="availability">
+                <label for="availableCheckBox">Available:</label>
+                <input type="checkbox" id="availableCheckBox" name="available" value="true">
+            </div>
+
+            <label for="categorySelect">Category:</label>
+            <div id="categorySelect">
+                <div class="categoryDiv">
+                    <label for="Home">Home</label>
+                    <input class="categoryInput" type="checkbox" id="Home" name="category" value="Home">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Clothing">Clothing</label>
+                    <input class="categoryInput" type="checkbox" id="Clothing" name="category" value="Clothing">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Shoes">Shoes</label>
+                    <input class="categoryInput" type="checkbox" id="Shoes" name="category" value="Shoes">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Sport">Sport</label>
+                    <input class="categoryInput" type="checkbox" id="Sport" name="category" value="Sport">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Appliances">Appliances</label>
+                    <input class="categoryInput" type="checkbox" id="Appliances" name="category" value="Appliances">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Technology">Technology</label>
+                    <input class="categoryInput" type="checkbox" id="Technology" name="category" value="Technology">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Entertainment">Entertainment</label>
+                    <input class="categoryInput" type="checkbox" id="Entertainment" name="category"
+                        value="Entertainment">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Books">Books</label>
+                    <input class="categoryInput" type="checkbox" id="Books" name="category" value="Books">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Cars">Cars</label>
+                    <input class="categoryInput" type="checkbox" id="Cars" name="category" value="Cars">
+                </div>
+            </div>
+
+            <input type="file" id="img-file-input" multiple accept="image/*" />
+            <div id="images">
+
+            </div>
+
+            <div id="buttons">
+                <button id="post-product">Create</button>
+                <button id="cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ordersModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>My Orders</h2>
+            <div id="ordersList">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="/store/js/user.js"></script>
+</body>
+
+</html>

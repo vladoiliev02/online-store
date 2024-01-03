@@ -6,6 +6,7 @@ import (
 	"online-store/controller"
 	"online-store/controller/security"
 	"online-store/dao"
+	"online-store/frontend"
 	"os"
 
 	"github.com/go-chi/chi/v5"
@@ -57,9 +58,10 @@ func initServer() {
 			Endpoint:     google.Endpoint,
 		},
 		UserEndpoint: "https://www.googleapis.com/oauth2/v3/userinfo",
+		LogoutPath:   "/logout",
+		HomePath:     "/store/",
 	}
 	securityConfig := security.NewSecurityConfiguration(router, oauthConfig, sessionStoreKey)
-	fs := http.FileServer(http.Dir("./static"))
 
 	router = chi.NewMux()
 
@@ -69,7 +71,8 @@ func initServer() {
 	router.Use(middleware.Recoverer)
 
 	securityConfig.ConfigureRouter(router)
-	router.Mount("/static", http.StripPrefix("/static/", fs))
+
+	frontend.Init(router)
 	router.Mount("/api/v1", controller.Router())
 }
 

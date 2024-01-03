@@ -41,6 +41,11 @@ func GetDAO() *DAO {
 		dao = &DAO{
 			db: db,
 		}
+
+		_, err = db.Exec("SELECT 1")
+		if err != nil {
+			panic(err.Error())
+		}
 	}
 
 	return dao

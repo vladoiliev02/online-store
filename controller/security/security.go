@@ -29,6 +29,8 @@ const (
 type OAuthConfiguration struct {
 	oauth2.Config
 	UserEndpoint string
+	LogoutPath   string
+	HomePath     string
 }
 
 type UserInfo struct {
@@ -61,7 +63,27 @@ func (sc *SecurityConfiguration) ConfigureRouter(r chi.Router) {
 	}
 
 	r.Use(sc.oauthCodeGrantMiddleware)
+
 	r.Get(url.Path, sc.codeExchange)
+	r.Get(sc.oauthConfig.LogoutPath, sc.logout)
+}
+
+func (sc *SecurityConfiguration) logout(w http.ResponseWriter, r *http.Request) {
+	session, err := sc.store.Get(r, sessionName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	session.Options.MaxAge = -1
+
+	err = session.Save(r, w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, sc.oauthConfig.HomePath, http.StatusSeeOther)
 }
 
 func (sc *SecurityConfiguration) oauthCodeGrantMiddleware(next http.Handler) http.Handler {
@@ -93,7 +115,7 @@ func (sc *SecurityConfiguration) oauthCodeGrantMiddleware(next http.Handler) htt
 					return
 				}
 
-				url := sc.oauthConfig.AuthCodeURL(oauthStateString)
+				url := sc.oauthConfig.AuthCodeURL(oauthStateString, oauth2.ApprovalForce)
 				http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 				return
 			}
@@ -146,7 +168,7 @@ func (sc *SecurityConfiguration) codeExchange(w http.ResponseWriter, r *http.Req
 
 	redirectBack := session.Values[redirectBackKey].(string)
 	if redirectBack == "" {
-		redirectBack = "/"
+		redirectBack = sc.oauthConfig.HomePath
 	}
 	http.Redirect(w, r, redirectBack, http.StatusTemporaryRedirect)
 }

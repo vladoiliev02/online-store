@@ -17,78 +17,67 @@ func newOrderRouter() chi.Router {
 	r.Route("/{orderId}", func(r chi.Router) {
 		r.Use(numericPathVariableExtractor("orderId"))
 		r.Get("/", ControllerHandler(orderController.getByID))
+		r.Get("/invoice", ControllerHandler(orderController.getInvoice))
 		r.Put("/", ControllerHandler(orderController.put))
+		r.Mount("/items", newItemRouter(orderController))
 	})
-	r.Get("/cart", ControllerHandler(orderController.getCart))
-	r.Mount("/cart/items", newItemRouter(orderController))
 
 	return r
 }
 
 type orderController struct {
-	orderDao *dao.OrderDAO
+	orderDao   *dao.OrderDAO
+	invoiceDao *dao.InvoiceDAO
 }
 
 func newOrderController() *orderController {
 	return &orderController{
-		orderDao: dao.NewOrderDAO(),
+		orderDao:   dao.NewOrderDAO(),
+		invoiceDao: dao.NewInvoiceDAO(),
 	}
 }
 
 func (o *orderController) getByID(r *http.Request) (*HTTPResponse[*model.Order], error) {
-	id := GetContextParam[int64]("id", r.Context())
+	id := GetContextParam[int64]("orderId", r.Context())
 
 	order, err := o.orderDao.GetByID(id)
 	if err != nil {
-		return nil, &HTTPError{
-			Code:    http.StatusNotFound,
-			Message: "Order not found",
-			Err:     err,
-		}
+		return nil, &HTTPError{Code: http.StatusNotFound, Message: "Order not found", Err: err}
 	}
 
 	return NewOKResponse(order), nil
 }
 
-func (o *orderController) getCart(r *http.Request) (*HTTPResponse[*model.Order], error) {
-	userID := GetContextParam[int64](UserIDKey, r.Context())
+func (o *orderController) getInvoice(r *http.Request) (*HTTPResponse[*model.Invoice], error) {
+	orderId := GetContextParam[int64]("orderId", r.Context())
 
-	cart, err := o.orderDao.GetCart(userID)
+	invoice, err := o.invoiceDao.GetByOrderID(orderId)
 	if err != nil {
-		return nil, &HTTPError{
-			Code:    http.StatusNotFound,
-			Message: "Cart not found",
-			Err:     err,
-		}
+		return nil, &HTTPError{Code: http.StatusNotFound, Message: "Invoice not found", Err: err}
 	}
 
-	return NewOKResponse(cart), nil
+	return NewOKResponse(invoice), nil
 }
 
 func (o *orderController) getAll(r *http.Request) (*HTTPResponse[[]*model.Order], error) {
-	userID := GetContextParam[int64]("userID", r.Context())
+	userID := GetContextParam[int64](UserIDKey, r.Context())
 
-	statusStr := getQueryParam(r, "status")
-	var err error
-	var status int64
-	if statusStr != "" {
-		status, err = toInt(statusStr)
-		if err != nil || !model.IsValidOrderStatus(model.OrderStatus(status)) {
-			return nil, &HTTPError{Code: http.StatusBadRequest, Message: "Invalid order status", Err: err}
-		}
+	status, err := getNumericQueryParam(r, "status")
+	if err != nil {
+		return nil, &HTTPError{Code: http.StatusBadRequest, Message: "Invalid order status", Err: err}
 	}
 
-	var order []*model.Order
+	var orders []*model.Order
 	if status == 0 {
-		order, err = o.orderDao.GetByUserID(userID)
+		orders, err = o.orderDao.GetByUserID(userID)
 	} else {
-		order, err = o.orderDao.GetByUserIDAndStatus(userID, model.OrderStatus(status))
+		orders, err = o.orderDao.GetByUserIDAndStatus(userID, model.OrderStatus(status))
 	}
 
 	if err != nil {
 		return nil, &HTTPError{Code: http.StatusNotFound, Message: "Order not found", Err: err}
 	}
-	return NewOKResponse(order), nil
+	return NewOKResponse(orders), nil
 }
 
 func (o *orderController) post(r *http.Request) (*HTTPResponse[*model.Order], error) {
@@ -110,7 +99,7 @@ func (o *orderController) post(r *http.Request) (*HTTPResponse[*model.Order], er
 }
 
 func (o *orderController) put(r *http.Request) (*HTTPResponse[*model.Order], error) {
-	id := GetContextParam[int64]("id", r.Context())
+	id := GetContextParam[int64]("orderId", r.Context())
 
 	newOrder, err := jsonUnmarshalBody[model.Order](r)
 	if err != nil {
@@ -158,7 +147,7 @@ func newItemController(orderController *orderController) *itemController {
 }
 
 func (i *itemController) getAll(r *http.Request) (*HTTPResponse[*model.Order], error) {
-	cartResponse, err := i.orderController.getCart(r)
+	cartResponse, err := i.orderController.getByID(r)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +167,10 @@ func (i *itemController) post(r *http.Request) (*HTTPResponse[*model.Item], erro
 		return nil, err
 	}
 
-	if err := model.ValidateItem(item); err != nil {
+	orderID := GetContextParam[int64]("orderId", r.Context())
+	item.OrderID.Scan(orderID)
+
+	if err := model.ValidateItem(item, false); err != nil {
 		return nil, &HTTPError{Code: http.StatusBadRequest, Message: "Invalid item", Err: err}
 	}
 

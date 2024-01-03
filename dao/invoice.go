@@ -41,17 +41,17 @@ func newInvoiceDAO(qe queryExecutor) *InvoiceDAO {
 	}
 }
 
-func (i *InvoiceDAO) GetByID(id int) (*model.Invoice, error) {
+func (i *InvoiceDAO) GetByID(id int64) (*model.Invoice, error) {
 	return executeSingleRowQuery(i.qe, scanInvoice,
 		selectInvoiceByID, id)
 }
 
-func (i *InvoiceDAO) GetByUserID(userID int) ([]*model.Invoice, error) {
+func (i *InvoiceDAO) GetByUserID(userID int64) ([]*model.Invoice, error) {
 	return executeMultiRowQuery(i.qe, scanInvoice,
 		selectInvoicesByUserID, userID)
 }
 
-func (i *InvoiceDAO) GetByOrderID(orderID int) (*model.Invoice, error) {
+func (i *InvoiceDAO) GetByOrderID(orderID int64) (*model.Invoice, error) {
 	return executeSingleRowQuery(i.qe, scanInvoice,
 		selectInvoicesByOrderID, orderID)
 }

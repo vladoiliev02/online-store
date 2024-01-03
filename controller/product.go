@@ -55,7 +55,7 @@ func (p *productController) getById(r *http.Request) (*HTTPResponse[*model.Produ
 	return NewOKResponse(product), nil
 }
 
-func (p *productController) getAll(r *http.Request) (*HTTPResponse[[]*model.Product], error) {
+func (p *productController) getAll(r *http.Request) (*HTTPResponse[any], error) {
 	page, pageSize, err := getPageAndPageSize(r)
 	if err != nil {
 		return nil, err
@@ -63,18 +63,41 @@ func (p *productController) getAll(r *http.Request) (*HTTPResponse[[]*model.Prod
 
 	name := getQueryParam(r, "name")
 	var result []*model.Product
-	if name != "" {
+	var count int64
+	category, err := getNumericQueryParam(r, "categories")
+	if err != nil || category >= model.ProductCategoryMask {
+		return nil, &HTTPError{Code: http.StatusBadRequest, Message: "Products invalid categories", Err: err}
+	}
+
+	if category == 0 {
+		category = model.ProductCategoryMask
+	}
+
+	userID, err := getNumericQueryParam(r, "userId")
+	if err != nil {
+		return nil, &HTTPError{Code: http.StatusBadRequest, Message: "Invalid user id", Err: err}
+	}
+
+	if userID != 0 {
+		result, count, err = p.productDAO.GetByUserID(userID, page, pageSize)
+	} else if name != "" {
 		log.Println("searching by name:", name)
-		result, err = p.productDAO.GetByNameLike(name, page, pageSize)
+		result, count, err = p.productDAO.GetByNameLike(name, page, pageSize, model.ProductCategory(category))
 	} else {
-		result, err = p.productDAO.GetAll(page, pageSize)
+		result, count, err = p.productDAO.GetAll(page, pageSize, model.ProductCategory(category))
 	}
 
 	if err != nil {
 		return nil, &HTTPError{Code: http.StatusNotFound, Message: "Products not found", Err: err}
 	}
 
-	return NewOKResponse(result), nil
+	return NewOKResponse[any](struct {
+		Products []*model.Product `json:"products"`
+		Count    int64            `json:"count"`
+	}{
+		Products: result,
+		Count:    count,
+	}), nil
 }
 
 func (p *productController) post(r *http.Request) (*HTTPResponse[*model.Product], error) {
@@ -83,6 +106,9 @@ func (p *productController) post(r *http.Request) (*HTTPResponse[*model.Product]
 		return nil, err
 	}
 
+	userID := GetContextParam[int64](UserIDKey, r.Context())
+
+	product.UserID.Scan(userID)
 	err = model.ValidateProduct(product, false)
 	if err != nil {
 		return nil, &HTTPError{
@@ -259,8 +285,16 @@ func newImageRouter() chi.Router {
 
 func (i *imageController) getByProductId(r *http.Request) (*HTTPResponse[[]*model.Image], error) {
 	productId := GetContextParam[int64](productIdCtxKey, r.Context())
+	limit, err := getNumericQueryParam(r, "limit")
+	if err != nil {
+		return nil, err
+	}
 
-	images, err := i.imageDAO.GetByProductID(productId)
+	if limit == 0 {
+		limit = 1
+	}
+
+	images, err := i.imageDAO.GetByProductID(productId, limit)
 	if err != nil {
 		return nil, &HTTPError{Code: http.StatusNotFound, Message: "Cannot find images", Err: err}
 	}
@@ -277,7 +311,7 @@ func (i *imageController) post(r *http.Request) (*HTTPResponse[*model.Image], er
 	}
 	image.ProductID.Scan(productId)
 
-	if err := model.ValidateImage(image); err != nil {
+	if err := model.ValidateImage(image, false); err != nil {
 		return nil, &HTTPError{Code: http.StatusBadRequest, Message: "Invalid image", Err: err}
 	}
 

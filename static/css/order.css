@@ -1,0 +1,139 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.order-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+    margin-bottom: 20px;
+    justify-content: space-between;
+}
+
+#details {
+    display: none;
+}
+
+.productItem {
+    display: flex;
+    justify-content: space-between;
+    background-color: #e9ecef;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+    cursor: pointer;
+}
+
+.productItem p {
+    text-align: center;
+    color: #555;
+}
+
+#buyDiv {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: baseline;
+    justify-content: center;
+}
+
+#buyDiv button {
+    background-color:#4c6baf;
+    color:  white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+    width: 90%;
+    height: 60;
+    overflow: hidden;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: baseline;
+    justify-content: center;
+}
+
+#buyDiv button:hover {
+    background-color: white;
+    color: #0d4fa1;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+
+.modal-content button {
+    background-color: #4c6baf;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.modal-content button:hover {
+    opacity: 0.8;
+    background-color: #0d4fa1;
+}

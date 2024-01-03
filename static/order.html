@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Order Details</title>
+    <link rel="stylesheet" type="text/css" href="/store/css/order.css">
+    <link rel="stylesheet" type="text/css" href="/store/css/navigation.css">
+    <script src="/store/js/navigation.js"></script>
+</head>
+
+<body>
+
+    <div id="orderDetails">
+        <div id="details">
+            <h1 class="order-info">Order ID: <span id="orderId"></span></h1>
+            <p class="order-info">Status: <span id="orderStatus"></span></p>
+            <p class="order-info">Address: <span id="orderAddress"></span></p>
+            <p class="order-info">Created At: <span id="orderCreatedAt"></span></p>
+            <p class="order-info">Latest Update: <span id="orderLatestUpdate"></span></p>
+            <p class="order-info">Invoice ID: <span id="invoiceId"></span></p>
+            <p class="order-info">Total Price: <span id="totalPrice"></span></p>
+        </div>
+
+        <h2 class="order-info">Products:</h2>
+        <div id="productsDiv">
+
+        </div>
+
+        <div id="buyDiv">
+            <button id="buy"> Buy </button>
+        </div>
+
+        <div id="purchaseModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Enter Address</h2>
+                <label for="city">City:</label>
+                <input type="text" id="city" placeholder="City">
+                <label for="country">Country:</label>
+                <input type="text" id="country" placeholder="Country">
+                <label for="address">Address:</label>
+                <input type="text" id="address" placeholder="Address">
+                <label for="postalCode">Postal Code:</label>
+                <input type="text" id="postalCode" placeholder="Postal Code">
+                <button id="purchase">Purchase</button>
+                <button id="cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/store/js/order.js">
+    </script>
+</body>
+
+</html>

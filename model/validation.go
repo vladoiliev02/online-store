@@ -123,12 +123,12 @@ func ValidateUser(user *User, exists bool) error {
 	return nil
 }
 
-func ValidateItem(item *Item) error {
+func ValidateItem(item *Item, exists bool) error {
 	if item == nil {
 		return &ValidationError{"Item: is nil", nil}
 	}
 
-	if !item.ID.Valid {
+	if (exists && !item.ID.Valid) || (!exists && item.ID.Valid) {
 		return &ValidationError{"Item: invalid ID", nil}
 	}
 
@@ -144,19 +144,15 @@ func ValidateItem(item *Item) error {
 		return &ValidationError{"Item: invalid quantity", nil}
 	}
 
-	if err := ValidatePrice(&item.Price); err != nil {
-		return &ValidationError{"Item: invalid price", nil}
-	}
-
 	return nil
 }
 
-func ValidateImage(image *Image) error {
+func ValidateImage(image *Image, exists bool) error {
 	if image == nil {
 		return &ValidationError{"Image: is nil", nil}
 	}
 
-	if !image.ID.Valid {
+	if (exists && !image.ID.Valid) || (!exists && image.ID.Valid) {
 		return &ValidationError{"Image: invalid ID", nil}
 	}
 
@@ -164,7 +160,7 @@ func ValidateImage(image *Image) error {
 		return &ValidationError{"Image: invalid product ID", nil}
 	}
 
-	if image.Data == nil || len(image.Data) == 0 {
+	if image.Data == "" || len(image.Data) == 0 {
 		return &ValidationError{"Image: invalid data", nil}
 	}
 
@@ -196,7 +192,7 @@ func ValidateOrder(order *Order, exists bool) error {
 }
 
 func IsValidOrderStatus(status OrderStatus) bool {
-	return status <= 0 || status >= InvalidOrderStatus
+	return !(status <= 0 || status >= InvalidOrderStatus)
 }
 
 func ValidateInvoice(invoice *Invoice, exists bool) error {

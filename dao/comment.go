@@ -27,8 +27,9 @@ const (
 )
 
 type CommentDAO struct {
-	dao *DAO
-	qe  queryExecutor
+	dao     *DAO
+	qe      queryExecutor
+	userDAO *UserDAO
 }
 
 func NewCommentDAO() *CommentDAO {
@@ -37,8 +38,9 @@ func NewCommentDAO() *CommentDAO {
 
 func newCommentDAO(qe queryExecutor) *CommentDAO {
 	return &CommentDAO{
-		dao: GetDAO(),
-		qe:  qe,
+		dao:     GetDAO(),
+		qe:      qe,
+		userDAO: NewUserDAO(),
 	}
 }
 
@@ -48,8 +50,19 @@ func (c *CommentDAO) GetByProductID(productID int64) ([]*model.Comment, error) {
 }
 
 func (c *CommentDAO) Create(comment *model.Comment) (*model.Comment, error) {
-	return executeSingleRowQuery(c.qe, propertyScanner(comment, &comment.ID, &comment.CreatedAt),
+	comment, err := executeSingleRowQuery(c.qe, propertyScanner(comment, &comment.ID, &comment.CreatedAt),
 		insertComment, comment.User.ID, comment.ProductID, comment.Comment)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := c.userDAO.GetByID(comment.User.ID.Int64)
+	if err != nil {
+		return nil, err
+	}
+
+	comment.User = *user
+	return comment, nil
 }
 
 func (c *CommentDAO) Delete(id int64) error {

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Product Page</title>
+    <link rel="stylesheet" type="text/css" href="/store/css/product.css">
+    <link rel="stylesheet" type="text/css" href="/store/css/navigation.css">
+    <script src="/store/js/navigation.js"></script>
+</head>
+
+<body>
+
+    <div id="productHeader">
+        <h1 class="product-details" id="product-name"></h1>
+        <button id="edit-product">Edit</button>
+        <div id="addToCartDiv">
+            <label for="quantity-input">Quantity: </label>
+            <input type="number" id="quantity-input" min="1" value="1">
+            <button id="add-to-cart">Add to Cart</button>
+        </div>
+    </div>
+    <p class="product-details" id="product-description"></p>
+    <p class="product-details">Price: <span id="product-price"></span></p>
+    <p class="product-details">Quantity: <span id="product-quantity"></span></p>
+    <p class="product-details">Category: <span id="product-category"></span></p>
+    <p class="product-details">Available: <span id="product-available"></span></p>
+    <p class="product-details">Rating: <span id="product-rating"></span></p>
+    <p class="product-details">Ratings Count: <span id="product-ratingsCount"></span></p>
+    <p class="product-details">Created At: <span id="product-createdAt"></span></p>
+    <p class="product-details">Created by: <span id="user-name"></span>
+        <img class="product-details" id="user-image"></img>
+    </p>
+
+    <div id="rating-div">
+        <label for="rating-input">Rate this product:</label>
+        <input id="rating-input" type="number" min="0" max="5" step="1" value="5">
+        <button id="submit-rating">Submit Rating</button>
+    </div>
+
+    <div id="comment-div">
+        <input id="comment-input" type="text" maxlength="512">
+        <button id="add-comment">Comment</button>
+    </div>
+
+    <div id="product-comments"></div>
+
+    <div id="product-images"></div>
+
+    <div id="edit-product-modal" class="modal">
+        <div class="modal-content">
+            <label for="description">Description:</label>
+            <textarea id="description"></textarea>
+
+            <label for="price">Price:</label>
+            <input type="text" id="price" />
+
+            <label for="currency">Currency:</label>
+            <select id="currency">
+                <option value="BGN">BGN</option>
+            </select>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" />
+
+            <div id="availability">
+                <label for="availableCheckBox">Available:</label>
+                <input type="checkbox" id="availableCheckBox" name="available" value="true">
+            </div>
+
+            <label for="categorySelect">Category:</label>
+            <div id="categorySelect">
+                <div class="categoryDiv">
+                    <label for="Home">Home</label>
+                    <input class="categoryInput" type="checkbox" id="Home" name="category" value="Home">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Clothing">Clothing</label>
+                    <input class="categoryInput" type="checkbox" id="Clothing" name="category" value="Clothing">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Shoes">Shoes</label>
+                    <input class="categoryInput" type="checkbox" id="Shoes" name="category" value="Shoes">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Sport">Sport</label>
+                    <input class="categoryInput" type="checkbox" id="Sport" name="category" value="Sport">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Appliances">Appliances</label>
+                    <input class="categoryInput" type="checkbox" id="Appliances" name="category" value="Appliances">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Technology">Technology</label>
+                    <input class="categoryInput" type="checkbox" id="Technology" name="category" value="Technology">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Entertainment">Entertainment</label>
+                    <input class="categoryInput" type="checkbox" id="Entertainment" name="category"
+                        value="Entertainment">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Books">Books</label>
+                    <input class="categoryInput" type="checkbox" id="Books" name="category" value="Books">
+                </div>
+                <div class="categoryDiv">
+                    <label for="Cars">Cars</label>
+                    <input class="categoryInput" type="checkbox" id="Cars" name="category" value="Cars">
+                </div>
+            </div>
+
+            <input type="file" id="img-file-input" multiple accept="image/*" />
+            <div id="images">
+
+            </div>
+            <button id="confirm-button">Confirm Images</button>
+            <button id="update-product">Update</button>
+            <button id="cancel-edit">Cancel</button>
+        </div>
+    </div>
+
+    <script src="/store/js/product.js"></script>
+</body>
+
+</html>

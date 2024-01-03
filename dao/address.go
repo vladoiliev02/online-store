@@ -53,7 +53,7 @@ func (a *AddressDAO) CreateAddress(address *model.Address) (*model.Address, erro
 		return nil, &DAOError{Query: insertAddress, Message: "Failed to check if address already exists", Err: err}
 	}
 
-	if existingAddress != nil {
+	if err == nil {
 		return existingAddress, nil
 	}
 

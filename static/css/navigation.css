@@ -1,0 +1,58 @@
+
+
+#storeHeader {
+    background-color: #4c6baf;
+    text-align: center;
+    padding: 10px 0;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+#storeHeader button {
+    background-color: white;
+    color: #4c6baf;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+    height: 60px;
+    width: 110px;
+    padding: 7px;
+    margin: 2px;
+    overflow: hidden;
+}
+
+#storeHeader button:hover {
+    background-color: #0d4fa1;
+    color: white;
+}
+
+#storeHeader span {
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+#storeHeader #profile {
+    display: flex;
+    align-items: center;
+}
+
+#storeHeader #profilePic {
+    width: 33%;
+    height: 66%;
+    margin: 0;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+#storeHeader #userNav {
+    display: flex;
+    justify-content: right;
+    margin-right: 10px;
+
+}
