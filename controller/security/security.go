@@ -13,6 +13,7 @@ import (
 	"online-store/controller"
 	"online-store/dao"
 	"online-store/model"
+	"strconv"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -57,14 +58,27 @@ func NewSecurityConfiguration(r chi.Router, oauthConfig *OAuthConfiguration, ses
 }
 
 func (sc *SecurityConfiguration) ConfigureRouter(r chi.Router) {
-	url, err := url.Parse(sc.oauthConfig.RedirectURL)
+	redirectUrl, err := url.Parse(sc.oauthConfig.RedirectURL)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	r.Use(sc.oauthCodeGrantMiddleware)
+	r.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			noAuthPaths := map[string]struct{}{
+				redirectUrl.Path:          {},
+				sc.oauthConfig.LogoutPath: {},
+			}
 
-	r.Get(url.Path, sc.codeExchange)
+			if _, found := noAuthPaths[r.URL.Path]; !found {
+				sc.oauthCodeGrantMiddleware(next).ServeHTTP(w, r)
+			} else {
+				next.ServeHTTP(w, r)
+			}
+		})
+	})
+
+	r.Get(redirectUrl.Path, sc.codeExchange)
 	r.Get(sc.oauthConfig.LogoutPath, sc.logout)
 }
 
@@ -83,7 +97,7 @@ func (sc *SecurityConfiguration) logout(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	http.Redirect(w, r, sc.oauthConfig.HomePath, http.StatusSeeOther)
+	http.Redirect(w, r, sc.oauthConfig.HomePath+`?refresh=`+strconv.FormatInt(time.Now().Unix(), 10), http.StatusSeeOther)
 }
 
 func (sc *SecurityConfiguration) oauthCodeGrantMiddleware(next http.Handler) http.Handler {
@@ -95,30 +109,23 @@ func (sc *SecurityConfiguration) oauthCodeGrantMiddleware(next http.Handler) htt
 		}
 
 		if !isAuthenticated(session) {
-			redirectURL, err := url.Parse(sc.oauthConfig.RedirectURL)
+			oauthStateString, err := generateRandomString(32)
 			if err != nil {
-				panic(err.Error())
-			}
-
-			if r.URL.Path != redirectURL.Path {
-				oauthStateString, err := generateRandomString(32)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-
-				session.Values[oauthStateKey] = oauthStateString
-				session.Values[redirectBackKey] = r.URL.String()
-				err = session.Save(r, w)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-
-				url := sc.oauthConfig.AuthCodeURL(oauthStateString, oauth2.ApprovalForce)
-				http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
+
+			session.Values[oauthStateKey] = oauthStateString
+			session.Values[redirectBackKey] = r.URL.String()
+			err = session.Save(r, w)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			url := sc.oauthConfig.AuthCodeURL(oauthStateString, oauth2.ApprovalForce)
+			http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+			return
 		}
 
 		next.ServeHTTP(w, r.WithContext(controller.SetContextParam(controller.UserIDKey, session.Values[controller.UserIDKey], r.Context())))

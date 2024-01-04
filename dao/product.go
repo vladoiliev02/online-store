@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"online-store/model"
+	"strings"
 )
 
 const (
@@ -32,7 +33,7 @@ const (
 	selectProductByName = `
 		SELECT id, name, description, price_units, price_currency, quantity, category, available, rating, ratings_count, created_at, user_id, (SELECT count(*) FROM products WHERE name LIKE $1 AND available AND (category & $4) != 0) as count
 		FROM products 
-		WHERE name LIKE $1 AND available AND (category & $4) != 0
+		WHERE LOWER(name) LIKE $1 AND available AND (category & $4) != 0
 		ORDER BY rating
 		LIMIT $2 OFFSET $3
 	`
@@ -138,7 +139,7 @@ func (p *ProductDAO) GetByNameLike(name string, page, pageSize int, category mod
 			return propertyScanner(&product, &product.ID, &product.Name, &product.Description, &product.Price.Units, &product.Price.Currency, &product.Quantity, &product.Category, &product.Available, &product.Rating, &product.RatingsCount, &product.CreatedAt, &product.UserID, &count)(row)
 		},
 		selectProductByName,
-		"%"+name+"%", pageSize, offset, category)
+		"%"+strings.ToLower(name)+"%", pageSize, offset, category)
 
 	return products, count, err
 }
