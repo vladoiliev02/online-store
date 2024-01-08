@@ -12,12 +12,12 @@ window.onload = function () {
     var p2
     var cur
 
-    fetch('/api/v1/users/me')
+    fetchWithStatusCheck('/api/v1/users/me')
         .then(response => response.json())
         .then(user => {
             currentUser = user
 
-            fetch('/api/v1/products/' + productId)
+            fetchWithStatusCheck('/api/v1/products/' + productId)
                 .then(response => response.json())
                 .then(data => {
                     product = data
@@ -44,7 +44,7 @@ window.onload = function () {
                     document.getElementById('product-ratingsCount').textContent = data.ratingsCount;
                     document.getElementById('product-createdAt').textContent = new Date(data.createdAt).toLocaleString();
 
-                    fetch('/api/v1/users/' + data.userId)
+                    fetchWithStatusCheck('/api/v1/users/' + data.userId)
                         .then(response => response.json())
                         .then(data => {
                             document.getElementById('user-name').textContent = data.name;
@@ -55,7 +55,7 @@ window.onload = function () {
                         editButton.style.display = 'block';
                     }
 
-                    fetch('/api/v1/products/' + productId + '/images?limit=10')
+                    fetchWithStatusCheck('/api/v1/products/' + productId + '/images?limit=10', null, false)
                         .then(response => response.json())
                         .then(images => {
                             const imagesDiv = document.getElementById('product-images');
@@ -73,11 +73,11 @@ window.onload = function () {
                         document.getElementById('addToCartDiv').style.display = 'none';
                     } else {
                         addToCartButton.addEventListener('click', () => {
-                            fetch('/api/v1/orders?status=1')
+                            fetchWithStatusCheck('/api/v1/orders?status=1')
                                 .then(response => response.json())
                                 .then(orders => orders[0])
                                 .then(cart => {
-                                    fetch(`/api/v1/orders/${cart.id}/items`, {
+                                    fetchWithStatusCheck(`/api/v1/orders/${cart.id}/items`, {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ window.onload = function () {
                     submitRatingButton.addEventListener('click', () => {
                         const rating = Number(ratingInput.value);
 
-                        fetch(`/api/v1/products/${productId}`, {
+                        fetchWithStatusCheck(`/api/v1/products/${productId}`, {
                             method: 'PATCH',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ window.onload = function () {
 
 
 
-            fetch('/api/v1/products/' + productId + '/comments')
+            fetchWithStatusCheck('/api/v1/products/' + productId + '/comments')
                 .then(response => response.json())
                 .then(comments => {
                     var commentsDiv = document.getElementById('product-comments');
@@ -201,7 +201,7 @@ window.onload = function () {
                     category: category
                 });
 
-                fetch(`/api/v1/products/${productId}`, {
+                fetchWithStatusCheck(`/api/v1/products/${productId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -248,7 +248,7 @@ window.onload = function () {
                             data: base64Image,
                             format: imageFormat
                         });
-                        fetch('/api/v1/products/' + productId + '/images', {
+                        fetchWithStatusCheck('/api/v1/products/' + productId + '/images', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -281,7 +281,7 @@ window.onload = function () {
                 var commentInput = document.getElementById('comment-input');
                 var comment = commentInput.value;
 
-                fetch('/api/v1/products/' + productId + '/comments', {
+                fetchWithStatusCheck('/api/v1/products/' + productId + '/comments', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -329,7 +329,7 @@ window.onload = function () {
                     deleteButton.style.backgroundColor = 'red';
                     deleteButton.style.color = 'white';
                     deleteButton.addEventListener('click', function () {
-                        fetch('/api/v1/products/' + productId + '/comments/' + comment.id, {
+                        fetchWithStatusCheck('/api/v1/products/' + productId + '/comments/' + comment.id, {
                             method: 'DELETE'
                         })
                             .then(response => {
@@ -360,7 +360,7 @@ function addImage(image, product, currentUser, productId, imagesDiv) {
         deleteButton.style.backgroundColor = 'red';
         deleteButton.style.color = 'white';
         deleteButton.addEventListener('click', function () {
-            fetch('/api/v1/products/' + productId + '/images/' + image.id, {
+            fetchWithStatusCheck('/api/v1/products/' + productId + '/images/' + image.id, {
                 method: 'DELETE'
             })
                 .then(response => {

@@ -9,17 +9,17 @@ window.onload = function () {
         5: 'Invalid Order Status'
     }
 
-    fetch('/api/v1/users/me')
+    fetchWithStatusCheck('/api/v1/users/me')
         .then(response => response.json())
         .then(currentUser => {
             const orderId = window.location.pathname.split('/').pop();
 
-            fetch(`/api/v1/orders/${orderId}/items`)
+            fetchWithStatusCheck(`/api/v1/orders/${orderId}/items`)
                 .then(response => response.json())
                 .then(order => {
                     if (order.userId === currentUser.id) {
                         if (order.status != 1) {
-                            fetch(`/api/v1/orders/${orderId}/invoice`)
+                            fetchWithStatusCheck(`/api/v1/orders/${orderId}/invoice`)
                                 .then(response => response.json())
                                 .then(invoice => {
                                     document.getElementById('details').style = `
@@ -40,7 +40,7 @@ window.onload = function () {
                         const productsDiv = document.getElementById('productsDiv');
 
                         order.products.forEach(product => {
-                            fetch(`/api/v1/products/${product.productId}`)
+                            fetchWithStatusCheck(`/api/v1/products/${product.productId}`)
                                 .then(response => response.json())
                                 .then(productDetails => {
                                     const productDiv = document.createElement('div');
@@ -70,7 +70,7 @@ window.onload = function () {
                                         deleteButton.addEventListener('click', (event) => {
                                             event.stopPropagation();
 
-                                            fetch(`/api/v1/orders/${order.id}/items/${product.id}`, {
+                                            fetchWithStatusCheck(`/api/v1/orders/${order.id}/items/${product.id}`, {
                                                 method: 'DELETE',
                                             }).then(response => {
                                                 if (response.ok) {
@@ -123,20 +123,15 @@ window.onload = function () {
                                 order.address = addressObject
                                 order.status = 2
 
-                                fetch(`/api/v1/orders/${orderId}`, {
+                                fetchWithStatusCheck(`/api/v1/orders/${orderId}`, {
                                     method: 'PUT',
                                     headers: {
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify(order),
                                 })
-                                    .then(response => {
-                                        if (response.ok) {
-                                            return response.json()
-                                        }
-
-                                        throw new Error(`HTTP error! status: ${response.status}`);
-                                    }).then(order => {
+                                    .then(response =>  response.json())
+                                    .then(order => {
                                         purchaseModal.style.display = 'none';
                                         window.location.href = `/store/orders/${order.id}`
                                     });
