@@ -132,9 +132,13 @@ window.onload = function () {
                                 })
                                     .then(response => {
                                         if (response.ok) {
-                                            purchaseModal.style.display = 'none';
-                                            window.location.href = '/store/index.html'
+                                            return response.json()
                                         }
+
+                                        throw new Error(`HTTP error! status: ${response.status}`);
+                                    }).then(order => {
+                                        purchaseModal.style.display = 'none';
+                                        window.location.href = `/store/orders/${order.id}`
                                     });
                             });
                         }

@@ -169,7 +169,6 @@ window.onload = function () {
 
                                         reader.readAsDataURL(file);
                                     });
-                                    // window.location.href = window.location.href;
                                 });
 
                             cancelButton.click()

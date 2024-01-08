@@ -23,7 +23,7 @@ const (
 		SELECT id, name, description, price_units, price_currency, quantity, category, available, rating, ratings_count, created_at, user_id, (SELECT count(*) FROM products WHERE available AND (category & $3) != 0) as count
 		FROM products
 		WHERE available AND (category & $3) != 0
-		ORDER BY rating
+		ORDER BY rating DESC
 		LIMIT $1 OFFSET $2
 	`
 
@@ -34,7 +34,7 @@ const (
 		SELECT id, name, description, price_units, price_currency, quantity, category, available, rating, ratings_count, created_at, user_id, (SELECT count(*) FROM products WHERE name LIKE $1 AND available AND (category & $4) != 0) as count
 		FROM products 
 		WHERE LOWER(name) LIKE $1 AND available AND (category & $4) != 0
-		ORDER BY rating
+		ORDER BY rating DESC
 		LIMIT $2 OFFSET $3
 	`
 
@@ -42,7 +42,7 @@ const (
 		SELECT id, name, description, price_units, price_currency, quantity, category, available, rating, ratings_count, created_at, user_id, (SELECT count(*) FROM products WHERE user_id = $1) as count
 		FROM products
 		WHERE user_id = $1
-		ORDER BY rating
+		ORDER BY rating DESC
 		LIMIT $2 OFFSET $3
 	`
 
