@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"online-store/dao"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
@@ -21,6 +22,17 @@ func Router() chi.Router {
 	r.Mount("/products", newProductRouter())
 	r.Mount("/orders", newOrderRouter())
 	r.Mount("/users", newUserRouter())
+
+	r.Get("/liveness", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+	r.Get("/readiness", func(w http.ResponseWriter, r *http.Request) {
+		if dao.GetDAO().IsReady() {
+			w.WriteHeader(http.StatusOK)
+		} else {
+			w.WriteHeader(http.StatusServiceUnavailable)
+		}
+	})
 
 	return r
 }

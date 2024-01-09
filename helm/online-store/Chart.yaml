@@ -1,0 +1,7 @@
+apiVersion: v2
+name: online-store
+version: 0.1.0
+type: application
+description: University project
+sources:
+  - https://www.github.com/vladoiliev02/online-store

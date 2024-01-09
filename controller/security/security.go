@@ -68,6 +68,8 @@ func (sc *SecurityConfiguration) ConfigureRouter(r chi.Router) {
 			noAuthPaths := map[string]struct{}{
 				redirectUrl.Path:          {},
 				sc.oauthConfig.LogoutPath: {},
+				"/api/v1/liveness":        {},
+				"/api/v1/readiness":       {},
 			}
 
 			if _, found := noAuthPaths[r.URL.Path]; !found {

@@ -43,12 +43,17 @@ func GetDAO() *DAO {
 		}
 
 		_, err = db.Exec("SELECT 1")
-		if err != nil {
+		if !dao.IsReady() {
 			panic(err.Error())
 		}
 	}
 
 	return dao
+}
+
+func (d *DAO) IsReady() bool {
+	_, err := dao.db.Exec("SELECT 1")
+	return err != nil
 }
 
 type rowScanner interface {

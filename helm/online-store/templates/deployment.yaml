@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}-deployment
+  labels:
+    {{- include "online-store.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.app.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "online-store.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "online-store.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ .Values.app.name }}
+        image: "{{ .Values.app.image.name }}:{{ .Values.app.image.tag }}"
+        imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+        ports:
+        - name: {{ .Values.app.port.name }}
+          containerPort: {{ .Values.app.port.number }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.app.probes.liveness }}
+            port: {{ .Values.app.port.name }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.app.probes.readiness }}
+            port: {{ .Values.app.port.name }}
+        resources:
+          {{- toYaml .Values.app.resources | nindent 10 }}
