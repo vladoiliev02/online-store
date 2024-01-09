@@ -4,8 +4,8 @@ app:
   name: online-store
   replicaCount: 3
   image:
-    name: vladoiliev02/online-store
-    tag: "1.0.0"
+    name: vlado0/online-store
+    tag: "latest"
     pullPolicy: Always
   port:
     name: app-port
