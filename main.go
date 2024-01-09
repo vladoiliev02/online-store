@@ -45,7 +45,12 @@ func initDb() {
 }
 
 func initServer() {
-	port = getEnvVar("PORT")
+	var exists bool
+	port, exists = os.LookupEnv("PORT")
+	if !exists {
+		port = "8080"
+	}
+
 	sessionStoreKey := os.Getenv("SESSION_STORE_KEY")
 	clientID := getEnvVar("CLIENT_ID")
 	clientSecret := getEnvVar("CLIENT_SECRET")
@@ -53,7 +58,7 @@ func initServer() {
 		Config: oauth2.Config{
 			ClientID:     clientID,
 			ClientSecret: clientSecret,
-			RedirectURL:  "http://localhost:30080/oauth/code",
+			RedirectURL:  "http://localhost:" + port + "/oauth/code",
 			Scopes:       []string{"openid", "profile", "email"},
 			Endpoint:     google.Endpoint,
 		},

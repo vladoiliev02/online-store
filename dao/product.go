@@ -49,7 +49,7 @@ const (
 	insertProduct = `
 		INSERT INTO products(name, description, price_units, price_currency, quantity, category, available, rating, ratings_count, user_id)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, 0, 0, $8)
-		RETURNING id, created_at
+		RETURNING id, created_at, rating, ratings_count
 	`
 
 	updateProduct = `
@@ -161,7 +161,7 @@ func (p *ProductDAO) GetByUserID(userID int64, page, pageSize int) ([]*model.Pro
 
 func (p *ProductDAO) Create(product *model.Product) (*model.Product, error) {
 	return executeSingleRowQuery(p.qe,
-		propertyScanner(product, &product.ID, &product.CreatedAt),
+		propertyScanner(product, &product.ID, &product.CreatedAt, &product.Rating, &product.RatingsCount),
 		insertProduct,
 		product.Name, product.Description, product.Price.Units, product.Price.Currency, product.Quantity,
 		product.Category, product.Available, product.UserID)

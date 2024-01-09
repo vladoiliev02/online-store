@@ -14,7 +14,7 @@ window.onload = function () {
         return categoriesMap
     }
 
-    fetch('/api/v1/users/' + userId)
+    fetchWithStatusCheck('/api/v1/users/' + userId)
         .then(response => response.json())
         .then(user => {
             pageUser = user
@@ -26,20 +26,15 @@ window.onload = function () {
             document.getElementById('createdAt').textContent = new Date(user.createdAt).toLocaleString();
             return user
         }).then(data => {
-            fetch('/api/v1/users/me')
+            fetchWithStatusCheck('/api/v1/users/me')
                 .then(response => response.json())
                 .then(user => {
                     currentUser = user
                     return user
                 })
                 .then(user => {
-                    fetch(`/api/v1/products?userId=${pageUser.id}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.json();
-                        })
+                    fetchWithStatusCheck(`/api/v1/products?userId=${pageUser.id}`)
+                        .then(response => response.json())
                         .then(result => {
                             displayProductsWithPagination(result)
                         })
@@ -112,11 +107,6 @@ window.onload = function () {
                                 }
                             }
 
-                            if (category == 0) {
-                                alert('Please choose a category')
-                                return
-                            }
-
                             const payload = JSON.stringify({
                                 "name": productName,
                                 description: description,
@@ -126,23 +116,25 @@ window.onload = function () {
                                 category: category
                             });
 
-                            fetch(`/api/v1/products`, {
+                            fetchWithStatusCheck(`/api/v1/products`, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
                                 body: payload
                             })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error(`HTTP error! status: ${response.status}`);
-                                    }
-                                    return response.json();
-                                })
+                                .then(response => response.json())
                                 .then(product => {
                                     var files = fileInput.files;
 
-                                    Array.from(files).forEach(function (file, i) {
+                                    let filesArray = Array.from(files)
+
+                                    if (filesArray.length == 0) {
+                                        displayProductsWithPagination({ products: [product] }, false)
+                                        return product
+                                    }
+
+                                    filesArray.forEach(function (file, i) {
                                         var reader = new FileReader();
 
                                         reader.onloadend = function () {
@@ -154,7 +146,7 @@ window.onload = function () {
                                                 format: imageFormat
                                             });
 
-                                            fetch('/api/v1/products/' + product.id + '/images', {
+                                            fetchWithStatusCheck('/api/v1/products/' + product.id + '/images', {
                                                 method: 'POST',
                                                 headers: {
                                                     'Content-Type': 'application/json'
@@ -163,13 +155,15 @@ window.onload = function () {
                                             })
                                                 .then(response => response.json())
                                                 .then(image => {
-                                                    displayProductsWithPagination({ products: [product] })
+                                                    if (i == 0) {
+                                                        displayProductsWithPagination({ products: [product] }, false)
+                                                    }
                                                 });
                                         }
 
                                         reader.readAsDataURL(file);
-                                    });
-                                });
+                                    })
+                                })
 
                             cancelButton.click()
                         }
@@ -180,7 +174,7 @@ window.onload = function () {
                         const closeButton = document.querySelector('.close');
 
                         ordersButton.addEventListener('click', () => {
-                            fetch('/api/v1/orders')
+                            fetchWithStatusCheck('/api/v1/orders')
                                 .then(response => response.json())
                                 .then(orders => {
                                     ordersList.innerHTML = '';
@@ -212,9 +206,11 @@ window.onload = function () {
         });
 
 
-    function displayProductsWithPagination(result) {
+    function displayProductsWithPagination(result, resetProducts = true) {
         const productsDiv = document.getElementById('products');
-        productsDiv.innerHTML = '';
+        if (resetProducts) {
+            productsDiv.innerHTML = '';
+        }
         result.products.forEach(product => {
             const productDiv = document.createElement('div');
             productDiv.className = "productClass"
@@ -231,14 +227,8 @@ window.onload = function () {
                 <p>Rating: ${product.rating}</p>
               `;
 
-            fetch(`/api/v1/products/${product.id}/images`)
-                .then(response => {
-                    if (response.ok) {
-                        return response.json()
-                    }
-
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                })
+            fetchWithStatusCheck(`/api/v1/products/${product.id}/images`, {}, false)
+                .then(response => response.json())
                 .then(images => {
                     const img = document.createElement('img');
                     img.src = images[0].data;

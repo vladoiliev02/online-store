@@ -1,14 +1,8 @@
 window.onload = function () {
   initNavigation()
 
-  fetch('/api/v1/users/me')
-    .then(response => {
-      if (response.ok) {
-        return response.json()
-      }
-
-      throw new Error(`HTTP error! status: ${response.status}`);
-    })
+  fetchWithStatusCheck('/api/v1/users/me')
+    .then(response => response.json())
     .then(currentUser => {
       var categories = Array.from(document.querySelectorAll('#categoryModal input')).reduce((map, input, index) => {
         map[input.value] = Math.pow(2, index);
@@ -28,31 +22,16 @@ window.onload = function () {
           })
         }
 
-        fetch(`/api/v1/products?name=${query}&categories=${category}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            return response.json();
-          })
+        fetchWithStatusCheck(`/api/v1/products?name=${query}&categories=${category}`)
+          .then(response => response.json())
           .then(result => {
             displayProductsWithPagination(result)
-          })
-          .catch(e => {
-            console.error('An error occurred while loading the products:', e);
           });
       }
 
       function loadProducts() {
-        fetch('/api/v1/products')
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            return response.json();
-          })
+        fetchWithStatusCheck('/api/v1/products')
+          .then(response => response.json())
           .then(result => {
             displayProductsWithPagination(result)
           })
@@ -78,14 +57,8 @@ window.onload = function () {
             <p>Rating: ${product.rating}</p>
           `;
 
-          fetch(`/api/v1/products/${product.id}/images`)
-            .then(response => {
-              if (response.ok) {
-                return response.json()
-              }
-
-              throw new Error(`HTTP error! status: ${response.status}`);
-            })
+          fetchWithStatusCheck(`/api/v1/products/${product.id}/images`, null, false)
+            .then(response => response.json())
             .then(images => {
               const img = document.createElement('img');
               img.src = images[0].data;

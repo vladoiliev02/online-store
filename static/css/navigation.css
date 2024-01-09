@@ -56,3 +56,48 @@
     margin-right: 10px;
 
 }
+
+#errorModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    pointer-events: auto;
+}
+
+body.modalOpen {
+    pointer-events: none;
+    overflow: hidden;
+}
+
+#closeErrorModalButton {
+    pointer-events: auto;
+    border-radius: 15px;
+    color: #ffffff;
+    background-color: #4c6baf;
+    height: 45px;
+    margin: 20px;
+    width: 130px;
+    text-align: center;
+}
+
+#closeErrorModalButton:hover {
+    background-color: #0d4fa1;
+    transition: background-color 0.3s ease;
+}
+
+#errorMessage {
+    color: #666;
+    font-size: 18px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background-color: #e9ecef;
+    padding: 10px;
+}
