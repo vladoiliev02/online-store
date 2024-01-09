@@ -1,4 +1,5 @@
 environment: production
+namespace: project
 app:
   name: online-store
   replicaCount: 3
