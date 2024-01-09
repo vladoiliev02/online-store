@@ -22,6 +22,11 @@ spec:
         ports:
         - name: {{ .Values.app.port.name }}
           containerPort: {{ .Values.app.port.number }}
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.app.config.name }}
+        - secretRef:
+            name: {{ .Values.app.secret.name }}
         livenessProbe:
           httpGet:
             path: {{ .Values.app.probes.liveness }}

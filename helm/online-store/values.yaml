@@ -2,6 +2,10 @@ environment: production
 namespace: project
 app:
   name: online-store
+  secret:
+    name: online-store-secret
+  config:
+    name: online-store-config
   replicaCount: 3
   image:
     name: vlado0/online-store
