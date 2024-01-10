@@ -5,11 +5,8 @@ metadata:
   name: {{ .Values.gcp.ip_name }}-ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.gcp.ip_name }}
+    networking.gke.io/managed-certificates: {{ .Values.tls.managed_cert }}
 spec:
-  tls:
-  - hosts:
-      - {{ .Values.app.host }}
-    secretName: {{ .Values.app.tls.secret }}
   rules:
   - hosts:
       - {{ .Values.app.host }}
