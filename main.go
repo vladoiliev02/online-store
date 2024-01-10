@@ -17,6 +17,7 @@ import (
 
 var (
 	port   string
+	host   string
 	router chi.Router
 )
 
@@ -51,6 +52,7 @@ func initServer() {
 		port = "8080"
 	}
 
+	host = getEnvVar("HOST")
 	sessionStoreKey := os.Getenv("SESSION_STORE_KEY")
 	clientID := getEnvVar("CLIENT_ID")
 	clientSecret := getEnvVar("CLIENT_SECRET")
@@ -58,7 +60,7 @@ func initServer() {
 		Config: oauth2.Config{
 			ClientID:     clientID,
 			ClientSecret: clientSecret,
-			RedirectURL:  "http://localhost:" + port + "/oauth/code",
+			RedirectURL:  host + "/oauth/code",
 			Scopes:       []string{"openid", "profile", "email"},
 			Endpoint:     google.Endpoint,
 		},
