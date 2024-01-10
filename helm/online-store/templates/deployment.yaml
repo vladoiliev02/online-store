@@ -42,10 +42,10 @@ spec:
         args:
           - "--structured-logs"
           - "--port="{{ .Values.app.gcp.sql.port }}
-          - {{ .Values.app.gcp.sql.connection_name }}
+          - "{{ .Values.app.gcp.sql.connection_name }}"
         securityContext:
           runAsNonRoot: true
         resources:
           requests:
             memory: "512Mi"
-            cpu:    "0.5"
+            cpu: "0.5"
