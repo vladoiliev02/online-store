@@ -6,8 +6,26 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.gcp.ip_name }}
 spec:
-  defaultBackend:
-    service:
-      name: {{ .Values.app.name }}-service
-      port:
-        number: {{ .Values.app.port.number }}
+  tls:
+  - hosts:
+      - {{ .Values.app.host }}
+    secretName: {{ .Values.app.tls.secret }}
+  rules:
+  - hosts:
+      - {{ .Values.app.host }}
+    http:
+    paths:
+    - path: /store/*
+      pathType: ImplementationSpecific
+      backend:
+        service:
+        name: {{ .Values.app.name }}-service
+        port:
+          number: {{ .Values.app.port.number }}
+    - path: /oauth/code
+      pathType: ImplementationSpecific
+      backend:
+        service:
+        name: {{ .Values.app.name }}-service
+        port:
+          number: {{ .Values.app.port.number }}
