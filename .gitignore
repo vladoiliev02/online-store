@@ -27,3 +27,4 @@ go.work
 .vscode
 
 terraform/gcp-service-acc.json
+helm/online-store/values.yaml
