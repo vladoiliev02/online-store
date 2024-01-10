@@ -27,9 +27,7 @@ func Router() chi.Router {
 		w.WriteHeader(http.StatusOK)
 	})
 	r.Get("/readiness", func(w http.ResponseWriter, r *http.Request) {
-		isReady := dao.GetDAO().IsReady()
-		log.Println("Checking readiness: ", isReady)
-		if isReady {
+		if dao.GetDAO().IsReady() {
 			w.WriteHeader(http.StatusOK)
 		} else {
 			w.WriteHeader(http.StatusServiceUnavailable)
