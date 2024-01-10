@@ -16,6 +16,11 @@ spec:
         {{- include "online-store.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ .Values.gcp.sql.sa_name }}
+      volumes:
+      - name: {{ .Values.gcp.sql.secret }}
+        secret:
+          secretName: {{ .Values.gcp.sql.secret }}
+          optional: false
       containers:
       - name: {{ .Values.app.name }}
         image: "{{ .Values.app.image.name }}:{{ .Values.app.image.tag }}"
