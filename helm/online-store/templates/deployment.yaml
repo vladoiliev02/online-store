@@ -30,11 +30,11 @@ spec:
         livenessProbe:
           httpGet:
             path: {{ .Values.app.probes.liveness }}
-            port: {{ .Values.app.port.name }}
+            port: {{ .Values.app.port.number }}
         readinessProbe:
           httpGet:
             path: {{ .Values.app.probes.readiness }}
-            port: {{ .Values.app.port.name }}
+            port: {{ .Values.app.port.number }}
         resources:
           {{- toYaml .Values.app.resources | nindent 10 }}
       - name: cloud-sql-proxy
