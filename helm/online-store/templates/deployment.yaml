@@ -15,6 +15,7 @@ spec:
       labels:
         {{- include "online-store.labels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ .Values.gcp.sql.sa_name }}
       containers:
       - name: {{ .Values.app.name }}
         image: "{{ .Values.app.image.name }}:{{ .Values.app.image.tag }}"
