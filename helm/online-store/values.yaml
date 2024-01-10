@@ -30,7 +30,7 @@ app:
       port: "5432"
   env:
     config:
-      PORT: "30080"
+      PORT: "8080"
       DB_DRIVER_NAME: "postgres"
     secrets:
       DB_CONNECTION_STRING: "host=localhost port=5432 user=postgres password=Test1234 dbname=online_store sslmode=disable"
