@@ -12,7 +12,7 @@ app:
     name: online-store-secret
   config:
     name: online-store-config
-  replicaCount: 3
+  replicaCount: 1
   image:
     name: vlado0/online-store
     tag: "latest"
@@ -22,10 +22,10 @@ app:
     number: 8080
   resources:
     requests:
-      cpu: 1
+      cpu: 0.3
       memory: 512M
     limits:
-      cpu: 2
+      cpu: 0.7
       memory: 1024M
   probes:
     liveness: /api/v1/liveness
