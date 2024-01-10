@@ -11,18 +11,18 @@ spec:
   - hosts:
       - {{ .Values.app.host }}
     http:
-    paths:
-    - path: /store/*
+      paths:
+      - path: /store/*
       pathType: ImplementationSpecific
       backend:
-        service:
-        name: {{ .Values.app.name }}-service
-        port:
+          service:
+          name: {{ .Values.app.name }}-service
+          port:
           number: {{ .Values.app.port.number }}
-    - path: /oauth/code
+      - path: /oauth/code
       pathType: ImplementationSpecific
       backend:
-        service:
-        name: {{ .Values.app.name }}-service
-        port:
+          service:
+          name: {{ .Values.app.name }}-service
+          port:
           number: {{ .Values.app.port.number }}
