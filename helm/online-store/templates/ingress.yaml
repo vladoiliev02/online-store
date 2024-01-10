@@ -1,6 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  namespace: {{ .Values.namespace }}
   name: {{ .Values.gcp.ip_name }}-ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.gcp.ip_name }}
