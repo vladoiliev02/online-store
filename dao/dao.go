@@ -42,7 +42,6 @@ func GetDAO() *DAO {
 			db: db,
 		}
 
-		_, err = db.Exec("SELECT 1")
 		if !dao.IsReady() {
 			panic(err.Error())
 		}
