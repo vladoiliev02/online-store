@@ -44,7 +44,7 @@ spec:
           - "--structured-logs"
           - "--port={{ .Values.gcp.sql.port }}"
           - "{{ .Values.gcp.sql.connection_name }}"
-          - "--credentials-file=/secrets/service_account.json"
+          - "--credentials-file=/secrets/{{ .Values.gcp.sql.file }}"
         securityContext:
           runAsNonRoot: true
         resources:
@@ -53,5 +53,5 @@ spec:
             cpu: "0.5"
         volumeMounts:
           - name: {{ .Values.gcp.sql.secret }}
-          mountPath: /secrets/
-          readOnly: true
+            mountPath: /secrets/
+            readOnly: true
