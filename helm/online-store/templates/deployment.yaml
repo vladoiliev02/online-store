@@ -33,13 +33,13 @@ spec:
             name: {{ .Values.app.config.name }}
         - secretRef:
             name: {{ .Values.app.secret.name }}
-        livenessProbe:
-          httpGet:
-            path: {{ .Values.app.probes.liveness }}
-            port: {{ .Values.app.port.number }}
         readinessProbe:
           httpGet:
             path: {{ .Values.app.probes.readiness }}
+            port: {{ .Values.app.port.number }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.app.probes.liveness }}
             port: {{ .Values.app.port.number }}
         resources:
           {{- toYaml .Values.app.resources | nindent 10 }}
