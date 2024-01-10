@@ -1,6 +1,7 @@
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
+  namespace: {{ .Values.namespace }}
   name: {{ .Values.tls.managed_cert }}
 spec:
   domains:
