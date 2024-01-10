@@ -26,7 +26,7 @@ app:
     readiness: /api/v1/readiness
   gcp:
     sql:
-      connection-name: go-course-project-409711:us-central1:postgres-db
+      connection_name: go-course-project-409711:us-central1:postgres-db
       port: "5432"
   env:
     config:
