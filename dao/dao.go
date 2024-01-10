@@ -53,7 +53,10 @@ func GetDAO() *DAO {
 
 func (d *DAO) IsReady() bool {
 	_, err := dao.db.Exec("SELECT 1")
-	return err != nil
+	if err != nil {
+		log.Println("Database error occurred: ", err)
+	}
+	return err == nil
 }
 
 type rowScanner interface {
