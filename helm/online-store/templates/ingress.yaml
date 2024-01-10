@@ -4,8 +4,6 @@ metadata:
   name: {{ .Values.gcp.ip_name }}-ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.gcp.ip_name }}
-  selector:
-    {{- include "online-store.labels" . | nindent 4 }}
 spec:
   defaultBackend:
     service:
