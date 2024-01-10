@@ -13,16 +13,16 @@ spec:
     http:
       paths:
       - path: /store/*
-      pathType: ImplementationSpecific
-      backend:
-          service:
-          name: {{ .Values.app.name }}-service
-          port:
-          number: {{ .Values.app.port.number }}
+        pathType: ImplementationSpecific
+        backend:
+            service:
+            name: {{ .Values.app.name }}-service
+            port:
+            number: {{ .Values.app.port.number }}
       - path: /oauth/code
-      pathType: ImplementationSpecific
-      backend:
-          service:
-          name: {{ .Values.app.name }}-service
-          port:
-          number: {{ .Values.app.port.number }}
+        pathType: ImplementationSpecific
+        backend:
+            service:
+            name: {{ .Values.app.name }}-service
+            port:
+            number: {{ .Values.app.port.number }}
