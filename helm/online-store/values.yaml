@@ -24,12 +24,16 @@ app:
   probes:
     liveness: /api/v1/liveness
     readiness: /api/v1/readiness
+  gcp:
+    sql:
+      connection-name: go-course-project-409711:us-central1:postgres-db
+      port: "5432"
   env:
     config:
       PORT: "30080"
       DB_DRIVER_NAME: "postgres"
     secrets:
-      DB_CONNECTION_STRING: "host=localhost port=5342 user=postgres password=Test1234 dbname=online_store sslmode=disable"
+      DB_CONNECTION_STRING: "host=localhost port=5432 user=postgres password=Test1234 dbname=online_store sslmode=disable"
       SESSION_STORE_KEY: "secretKey"
       CLIENT_ID: "18725992034-4ohlj8tha3rr6rmf7pb6tvh8fhf58fql.apps.googleusercontent.com"
       CLIENT_SECRET: "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"
