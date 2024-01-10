@@ -1,5 +1,11 @@
 environment: production
 namespace: project
+gcp:
+  ip_name: "project-ip"
+  ip: "34.149.84.163"
+  sql:
+    connection_name: go-course-project-409711:us-central1:postgres-db
+    port: "5432"
 app:
   name: online-store
   secret:
@@ -24,10 +30,6 @@ app:
   probes:
     liveness: /api/v1/liveness
     readiness: /api/v1/readiness
-  gcp:
-    sql:
-      connection_name: go-course-project-409711:us-central1:postgres-db
-      port: "5432"
   env:
     config:
       PORT: "8080"

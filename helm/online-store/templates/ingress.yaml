@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.gcp.ip_name }}-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.gcp.ip_name }}
+  labels:
+    app: hello
+spec:
+  defaultBackend:
+    service:
+      name: {{ .Values.app.name }}-service
+      port:
+        number: {{ .Values.app.port.number }}
