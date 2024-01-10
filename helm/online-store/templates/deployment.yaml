@@ -41,7 +41,7 @@ spec:
         image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.0
         args:
           - "--structured-logs"
-          - "--port="{{ .Values.app.gcp.sql.port }}
+          - "--port={{ .Values.app.gcp.sql.port }}"
           - "{{ .Values.app.gcp.sql.connection_name }}"
         securityContext:
           runAsNonRoot: true
