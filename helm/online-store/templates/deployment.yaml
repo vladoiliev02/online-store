@@ -48,8 +48,8 @@ spec:
         args:
           - "--structured-logs"
           - "--port={{ .Values.gcp.sql.port }}"
-          - "{{ .Values.gcp.sql.connection_name }}"
           - "--credentials-file=/secrets/{{ .Values.gcp.sql.file }}"
+          - "{{ .Values.gcp.sql.connection_name }}"
         securityContext:
           runAsNonRoot: true
         resources:
