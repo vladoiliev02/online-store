@@ -6,6 +6,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.gcp.ip_name }}
     networking.gke.io/managed-certificates: {{ .Values.tls.managed_cert }}
+    kubernetes.io/ingress.allow-http: "false"
 spec:
   rules:
   - hosts:
