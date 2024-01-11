@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"online-store/model"
+	"github.com/vladoiliev02/online-store/model"
 )
 
 const (

@@ -2,7 +2,8 @@ package dao
 
 import (
 	"database/sql"
-	"online-store/model"
+
+	"github.com/vladoiliev02/online-store/model"
 )
 
 const (

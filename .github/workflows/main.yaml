@@ -1,0 +1,47 @@
+name: main
+
+on:
+  push:
+    branches: [ "main" ]
+    
+jobs:
+  editorconfig-checker:
+    name: Editorconfig Checker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Editorconfig check
+        uses: editorconfig-checker/action-editorconfig-checker@main
+      - name: Editorconfig check
+        run: editorconfig-checker
+    
+  markdown-lint:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Markdown Lint
+        run: npx markdown-cli *.md
+
+  git-leaks:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: git-leaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Execute Unit Tests
+        run: python3 -m unittest src/app_test.py
+  

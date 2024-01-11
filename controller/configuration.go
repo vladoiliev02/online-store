@@ -6,8 +6,9 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"online-store/dao"
 	"strconv"
+
+	"github.com/vladoiliev02/online-store/dao"
 
 	"github.com/go-chi/chi/v5"
 )

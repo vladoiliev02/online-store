@@ -3,11 +3,12 @@ package main
 import (
 	"log"
 	"net/http"
-	"online-store/controller"
-	"online-store/controller/security"
-	"online-store/dao"
-	"online-store/frontend"
 	"os"
+
+	"github.com/vladoiliev02/online-store/controller"
+	"github.com/vladoiliev02/online-store/controller/security"
+	"github.com/vladoiliev02/online-store/dao"
+	"github.com/vladoiliev02/online-store/frontend"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

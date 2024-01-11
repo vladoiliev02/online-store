@@ -10,11 +10,12 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"online-store/controller"
-	"online-store/dao"
-	"online-store/model"
 	"strconv"
 	"time"
+
+	"github.com/vladoiliev02/online-store/controller"
+	"github.com/vladoiliev02/online-store/dao"
+	"github.com/vladoiliev02/online-store/model"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"

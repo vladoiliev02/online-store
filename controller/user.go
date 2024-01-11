@@ -2,8 +2,9 @@ package controller
 
 import (
 	"net/http"
-	"online-store/dao"
-	"online-store/model"
+
+	"github.com/vladoiliev02/online-store/dao"
+	"github.com/vladoiliev02/online-store/model"
 
 	"github.com/go-chi/chi/v5"
 )

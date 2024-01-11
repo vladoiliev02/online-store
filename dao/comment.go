@@ -1,6 +1,6 @@
 package dao
 
-import "online-store/model"
+import "github.com/vladoiliev02/online-store/model"
 
 const (
 	selectComments = `

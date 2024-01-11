@@ -3,7 +3,8 @@ package dao
 import (
 	"database/sql"
 	"errors"
-	"online-store/model"
+
+	"github.com/vladoiliev02/online-store/model"
 )
 
 const (
