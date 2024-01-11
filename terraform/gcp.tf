@@ -163,33 +163,11 @@ resource "google_compute_global_address" "project_ip" {
 }
 
 resource "google_dns_managed_zone" "projectsv_org" {
+  name          = "projectsv-org"
+  visibility    = "public"
   description = "DNS zone for domain: projectsv.org"
   dns_name    = "projectsv.org."
-
-  dnssec_config {
-    default_key_specs {
-      algorithm  = "rsasha256"
-      key_length = 2048
-      key_type   = "keySigning"
-      kind       = "dns#dnsKeySpec"
-    }
-
-    default_key_specs {
-      algorithm  = "rsasha256"
-      key_length = 1024
-      key_type   = "zoneSigning"
-      kind       = "dns#dnsKeySpec"
-    }
-
-    kind          = "dns#managedZoneDnsSecConfig"
-    non_existence = "nsec3"
-    state         = "on"
-  }
-
-  force_destroy = false
-  name          = "projectsv-org"
   project       = "${var.project_id}"
-  visibility    = "public"
 }
 
 resource "google_dns_record_set" "frontend" {
