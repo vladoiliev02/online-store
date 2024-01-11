@@ -3,6 +3,7 @@ module online-store
 go 1.21.4
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/gorilla/sessions v1.2.2
 	github.com/lib/pq v1.10.9
