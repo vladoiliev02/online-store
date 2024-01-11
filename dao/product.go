@@ -33,7 +33,7 @@ const (
 
 	selectProductByName = `
 		SELECT id, name, description, price_units, price_currency, quantity, category, available, rating, ratings_count, created_at, user_id, (SELECT count(*) FROM products WHERE name LIKE $1 AND available AND (category & $4) != 0) as count
-		FROM products 
+		FROM products
 		WHERE LOWER(name) LIKE $1 AND available AND (category & $4) != 0
 		ORDER BY rating DESC
 		LIMIT $2 OFFSET $3
@@ -54,7 +54,7 @@ const (
 	`
 
 	updateProduct = `
-		UPDATE products 
+		UPDATE products
 		SET description = $1, price_units = $2, price_currency = $3, quantity = $4, category = $5, available = $6
 		WHERE id = $7
 		RETURNING name, rating, ratings_count, user_id
@@ -78,14 +78,14 @@ const (
 	`
 
 	updateProductNewRating = `
-		UPDATE products 
-		SET rating = (rating * ratings_count + $1) / (ratings_count + 1), ratings_count = ratings_count + 1 
-		WHERE id = $2 
+		UPDATE products
+		SET rating = (rating * ratings_count + $1) / (ratings_count + 1), ratings_count = ratings_count + 1
+		WHERE id = $2
 		RETURNING id, name, description, price_units, price_currency, quantity, category, available, rating, ratings_count, created_at, user_id
 	`
 
 	updateProductExistingRating = `
-		UPDATE products 
+		UPDATE products
 		SET rating = (rating * ratings_count + $1 - $2) / ratings_count
 		WHERE id = $3
 		RETURNING id, name, description, price_units, price_currency, quantity, category, available, rating, ratings_count, created_at, user_id

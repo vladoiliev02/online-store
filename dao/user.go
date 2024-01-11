@@ -8,7 +8,7 @@ import (
 
 const (
 	selectAllUsers = `
-		SELECT u.id, u.name, u.first_name, u.last_name, u.picture_url, u.email, u.created_at, 
+		SELECT u.id, u.name, u.first_name, u.last_name, u.picture_url, u.email, u.created_at,
 			a.id, a.city, a.country, a.address, a.postal_code
 		FROM users u
 		LEFT JOIN addresses a ON u.address_id = a.id

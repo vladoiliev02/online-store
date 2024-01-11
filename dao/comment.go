@@ -21,7 +21,7 @@ const (
 	`
 
 	deleteComment = `
-		DELETE FROM comments 
+		DELETE FROM comments
 		WHERE id = $1
 	`
 )

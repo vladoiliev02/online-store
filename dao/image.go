@@ -12,7 +12,7 @@ const (
 
 	selectByProductId = selectImages + `
 		WHERE product_id = $1
-		LIMIT $2	
+		LIMIT $2
 	`
 
 	insertImage = `

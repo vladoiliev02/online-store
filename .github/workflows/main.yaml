@@ -3,7 +3,7 @@ name: main
 on:
   push:
     branches: [ "main" ]
-    
+
 jobs:
   editorconfig-checker:
     name: Editorconfig Checker
@@ -15,7 +15,7 @@ jobs:
         uses: editorconfig-checker/action-editorconfig-checker@main
       - name: Editorconfig check
         run: editorconfig-checker
-    
+
   markdown-lint:
     name: Markdown Lint
     runs-on: ubuntu-latest
@@ -43,5 +43,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Execute Unit Tests
-        run: python3 -m unittest src/app_test.py
-  
+        run: go test github.com/vladoiliev02/online-store/dao

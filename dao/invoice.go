@@ -4,9 +4,9 @@ import "github.com/vladoiliev02/online-store/model"
 
 const (
 	selectInvoices = `
-		SELECT i.id, i.user_id, i.total_price_units, i.total_price_currency, i.created_at, 
-			o.id, o.user_id, o.status, o.created_at, 
-			a.id, a.city, a.country, a.address, a.postal_code 
+		SELECT i.id, i.user_id, i.total_price_units, i.total_price_currency, i.created_at,
+			o.id, o.user_id, o.status, o.created_at,
+			a.id, a.city, a.country, a.address, a.postal_code
 		FROM invoices i
 		JOIN orders o ON o.id = i.order_id
 		LEFT JOIN addresses a ON a.id = o.address_id
