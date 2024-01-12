@@ -1,5 +1,9 @@
 name: main
 
+env:
+  IMAGE_NAME: online-store
+  IMAGE_TAG: latest # ${{ github.sha }}
+
 on:
   push:
     branches: [ "main" ]
@@ -73,3 +77,51 @@ jobs:
           url: jdbc:postgresql://postgres:5432/db
           user: user
           password: password
+
+  sonar-cloud-sast:
+    name: Sonar Cloud SAST
+    needs: [database-tests, unit-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Sonar Cloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  snyk-sca:
+    name: Snyk SCA
+    needs: [database-tests, unit-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/golang@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+  push-image:
+    name: Scan and Push Image
+    needs: [sonar-cloud-sast, snyk-sca]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build docker image
+        run: docker image build -t ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+      - name: Push docker image to registry
+        run: |
+          docker login --username ${{ vars.DOCKERHUB_USER }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
+          docker push ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker logout

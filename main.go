@@ -27,8 +27,6 @@ func init() {
 	initServer()
 }
 
-// PGPASSWORD=Test1234 psql -p 5342 -U postgres -h localhost -d online_store -f ./sql/createDatabase.sql
-// go build . && ./online-store
 func main() {
 	log.Println("Welcome to the store")
 	http.ListenAndServe(":"+port, router)
