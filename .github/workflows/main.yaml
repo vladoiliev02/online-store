@@ -125,3 +125,25 @@ jobs:
           docker login --username ${{ vars.DOCKERHUB_USER }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
           docker push ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           docker logout
+
+  terrafrom:
+    name: Terraform
+    needs: [push-image]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      - name: Terraform Plan
+        run: terraform plan -input=false
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve -input=false
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
