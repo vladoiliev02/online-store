@@ -3,6 +3,8 @@ name: main
 env:
   IMAGE_NAME: online-store
   IMAGE_TAG: latest # ${{ github.sha }}
+  CLUSTER_NAME: project-cluster
+  CLUSTER_REGION: europe-central2
 
 on:
   push:
@@ -143,8 +145,41 @@ jobs:
         run: terraform plan -input=false
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
       - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve -input=false
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+  deploy:
+    name: Deploy to GKE
+    needs: [terrafrom]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GOOGLE_CREDENTIALS }}
+          export_default_credentials: true
+      - name: Configure kubectl
+        run: |
+          gcloud container clusters get-credentials $CLUSTER_NAME --region $CLUSTER_REGION
+      - name: Helm upgrade
+        run: |
+          echo "${{ secrets.HELM_VALUES }}" > ./helm/online-store/values.yaml
+          helm upgrade --wait --timeout 300s  -i online-store -f ./helm/online-store/values.yaml ./helm/online-store
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          draft: false
+          prerelease: false
