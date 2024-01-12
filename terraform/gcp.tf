@@ -16,16 +16,16 @@ variable "gcp_credentials" {
 }
 
 provider "google" {
-  credentials = var.gcp_credentials
-  project     = "${var.project_id}"
-  region      = "${var.region}"
+  credentials = file("gcp-service-acc.json")
+  project     = var.project_id
+  region      = var.region
 }
 
 resource "google_sql_database_instance" "postgres_db" {
   database_version = "POSTGRES_15"
   name             = "postgres-db"
-  project          = "${var.project_id}"
-  region           = "${var.region}"
+  project          = var.project_id
+  region           = var.region
 
   settings {
     activation_policy = "ALWAYS"
@@ -38,7 +38,7 @@ resource "google_sql_database_instance" "postgres_db" {
       }
 
       enabled                        = true
-      location                       = "${var.region}"
+      location                       = var.region
       start_time                     = "10:00"
       transaction_log_retention_days = 7
     }
@@ -60,11 +60,11 @@ resource "google_sql_database_instance" "postgres_db" {
 resource "google_service_account" "cloud_sql_proxy" {
   account_id   = "cloud-sql-proxy"
   display_name = "cloud-sql-proxy"
-  project      = "${var.project_id}"
+  project      = var.project_id
 }
 
 resource "google_project_iam_member" "cloud_sql_proxy_permission" {
-  project = "${var.project_id}"
+  project = var.project_id
   role    = "roles/cloudsql.client"
   member  = "serviceAccount:${google_service_account.cloud_sql_proxy.email}"
 }
@@ -74,7 +74,8 @@ resource "google_container_cluster" "project_cluster" {
     state = "DECRYPTED"
   }
 
-  datapath_provider         = "ADVANCED_DATAPATH"
+  datapath_provider   = "ADVANCED_DATAPATH"
+  deletion_protection = false
 
   default_snat_status {
     disabled = false
@@ -86,9 +87,9 @@ resource "google_container_cluster" "project_cluster" {
     cluster_dns_scope  = "CLUSTER_SCOPE"
   }
 
-  enable_autopilot            = true
+  enable_autopilot = true
 
-  location = "${var.region}"
+  location = var.region
 
   logging_config {
     enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
@@ -108,7 +109,7 @@ resource "google_container_cluster" "project_cluster" {
     }
   }
 
-  name    = "project-cluster"
+  name = "project-cluster"
 
   node_config {
     disk_size_gb = 100
@@ -151,7 +152,7 @@ resource "google_container_cluster" "project_cluster" {
     }
   }
 
-  project = "${var.project_id}"
+  project = var.project_id
 
   release_channel {
     channel = "REGULAR"
@@ -163,15 +164,15 @@ resource "google_compute_global_address" "project_ip" {
   name         = "project-ip"
   address_type = "EXTERNAL"
   ip_version   = "IPV4"
-  project      = "${var.project_id}"
+  project      = var.project_id
 }
 
 resource "google_dns_managed_zone" "projectsv_org" {
-  name          = "projectsv-org"
-  visibility    = "public"
+  name        = "projectsv-org"
+  visibility  = "public"
   description = "DNS zone for domain: projectsv.org"
   dns_name    = "projectsv.org."
-  project       = "${var.project_id}"
+  project     = var.project_id
 }
 
 resource "google_dns_record_set" "frontend" {

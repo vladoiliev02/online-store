@@ -2,7 +2,7 @@ name: main
 
 env:
   IMAGE_NAME: online-store
-  IMAGE_TAG: latest # ${{ github.sha }}
+  IMAGE_TAG: ${{ github.sha }}
   CLUSTER_NAME: project-cluster
   CLUSTER_REGION: europe-central2
 
@@ -174,7 +174,7 @@ jobs:
       - name: Helm upgrade
         run: |
           echo "${{ secrets.HELM_VALUES }}" > ./helm/online-store/values.yaml
-          helm upgrade --wait --timeout 300s  -i online-store -f ./helm/online-store/values.yaml ./helm/online-store
+          helm upgrade --wait --timeout 300s  -i online-store -f ./helm/online-store/values.yaml --set app.image.tag=$IMAGE_TAG --set app.image.name=$IMAGE_NAME ./helm/online-store
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
