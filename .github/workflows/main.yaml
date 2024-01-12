@@ -37,6 +37,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: git-leaks
         uses: gitleaks/gitleaks-action@v2
         env:
