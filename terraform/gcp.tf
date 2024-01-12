@@ -10,9 +10,13 @@ variable "region" {
   default     = "europe-central2"
 }
 
+variable "gcp_credentials" {
+  description = "GCP credentials"
+  type        = string
+}
 
 provider "google" {
-  credentials = file("./gcp-service-acc.json")
+  credentials = var.gcp_credentials
   project     = "${var.project_id}"
   region      = "${var.region}"
 }
