@@ -130,34 +130,34 @@ jobs:
           docker push ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           docker logout
 
-  terrafrom:
-    name: Terraform
-    needs: [push-image]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Terraform Init
-        working-directory: ./terraform
-        run: terraform init
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-      - name: Terraform Plan
-        working-directory: ./terraform
-        run: terraform plan -input=false
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
-      - name: Terraform Apply
-        working-directory: ./terraform
-        run: terraform apply -auto-approve -input=false
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-          TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
+  # terrafrom:
+  #   name: Terraform
+  #   needs: [push-image]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Terraform Init
+  #       working-directory: ./terraform
+  #       run: terraform init
+  #       env:
+  #         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+  #     - name: Terraform Plan
+  #       working-directory: ./terraform
+  #       run: terraform plan -input=false
+  #       env:
+  #         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+  #         TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
+  #     - name: Terraform Apply
+  #       working-directory: ./terraform
+  #       run: terraform apply -auto-approve -input=false
+  #       env:
+  #         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+  #         TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
 
   deploy:
     name: Deploy to GKE
-    needs: [terrafrom]
+    needs: [push-image]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
