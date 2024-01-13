@@ -170,8 +170,8 @@ jobs:
       - name: Configure kubectl
         uses: google-github-actions/get-gke-credentials@v2.0.0
         with:
-          cluster_name: ${{ env.CLUSTER_NAME }}
-          location: ${{ env.CLUSTER_REGION }}
+          cluster_name: ${{ vars.CLUSTER_NAME }}
+          location: ${{ vars.CLUSTER_REGION }}
       - name: Helm upgrade
         run: |
           echo "${{ secrets.HELM_VALUES }}" > ./helm/online-store/values.yaml
