@@ -1,3 +1,3 @@
 # online-store
 
-Golang course project
+University project
