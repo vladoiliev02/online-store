@@ -162,7 +162,7 @@ jobs:
 
   deploy:
     name: Deploy to GKE
-    needs: [terrafrom]
+    needs: [terrafrom, push-image]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
