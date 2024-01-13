@@ -109,10 +109,13 @@ jobs:
     name: Scan and Push Image
     needs: [sonar-cloud-sast, snyk-sca]
     runs-on: ubuntu-latest
+    outputs:
+      IMAGE_TAG: ${{ steps.set-version.outputs.IMAGE_TAG }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set Version
+        id: set-version
         run: echo "IMAGE_TAG=$(date +'%Y-%m-%d-%H%M%s')" >> $GITHUB_ENV
       - name: Build docker image
         run: docker image build -t ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
@@ -176,13 +179,13 @@ jobs:
       - name: Helm upgrade
         run: |
           echo "${{ secrets.HELM_VALUES }}" | base64 -d > ./helm/online-store/values.yaml
-          helm upgrade --wait --timeout 300s  -i online-store -f ./helm/online-store/values.yaml --set app.image.tag=${{ env.IMAGE_TAG }} --set app.image.name=${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }} ./helm/online-store
+          helm upgrade --wait --timeout 300s  -i online-store -f ./helm/online-store/values.yaml --set app.image.tag=${{ needs.push-image.outputs.IMAGE_TAG }} --set app.image.name=${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }} ./helm/online-store
       - name: Create Release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.IMAGE_TAG }}
-          release_name: Release ${{ env.IMAGE_TAG }}
+          tag_name: ${{ needs.push-image.outputs.IMAGE_TAG }}
+          release_name: Release ${{ needs.push-image.outputs.IMAGE_TAG }}
           draft: false
           prerelease: false
