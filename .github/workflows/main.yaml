@@ -181,7 +181,7 @@ jobs:
       - name: Flyway Migration
         uses: docker://flyway/flyway:10
         with:
-          args: -baselineVersion="1" -baselineDescription="baseline_migration" baseline
+          args: migrate
         env:
           FLYWAY_URL: ${{ secrets.DB_URL }}
           FLYWAY_USER: ${{ secrets.DB_USER }}
