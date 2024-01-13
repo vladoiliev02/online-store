@@ -158,7 +158,7 @@ jobs:
 
   deploy:
     name: Deploy to GKE
-    needs: [push-image]
+    needs: [push-image] # CHANGE THIS TO TERRAFORM
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -174,7 +174,7 @@ jobs:
           location: ${{ vars.CLUSTER_REGION }}
       - name: Helm upgrade
         run: |
-          echo "${{ secrets.HELM_VALUES }}" > ./helm/online-store/values.yaml
+          echo "${{ secrets.HELM_VALUES }}" | base64 -d > ./helm/online-store/values.yaml
           helm upgrade --wait --timeout 300s  -i online-store -f ./helm/online-store/values.yaml --set app.image.tag=$IMAGE_TAG --set app.image.name=${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }} ./helm/online-store
       - name: Create Release
         id: create_release
