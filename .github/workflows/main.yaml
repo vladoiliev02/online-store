@@ -172,7 +172,7 @@ jobs:
         run: |-
           gcloud --quiet auth configure-docker
       - name: Configure kubectl
-        uses: google-github-actions/get-gke-credentials
+        uses: google-github-actions/get-gke-credentials@v2.0.0
         with:
           cluster_name: ${{ env.CLUSTER_NAME }}
           location: ${{ env.CLUSTER_NAME }}
