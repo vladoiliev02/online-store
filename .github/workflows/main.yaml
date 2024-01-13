@@ -176,8 +176,14 @@ jobs:
         run: |
           echo "${{ secrets.HELM_VALUES }}" | base64 -d > ./helm/online-store/values.yaml
           helm upgrade --wait --timeout 300s  -i online-store -f ./helm/online-store/values.yaml --set app.image.tag=$IMAGE_TAG --set app.image.name=${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }} ./helm/online-store
+
+  release:
+    name: Release
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    steps:
       - name: Create Release
-        uses: actions/create-release@v1.1.4
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
