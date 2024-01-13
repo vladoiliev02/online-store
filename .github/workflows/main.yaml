@@ -178,6 +178,7 @@ jobs:
           location: ${{ vars.CLUSTER_REGION }}
       - name: Helm upgrade
         run: |
+          sed -i "s/^appVersion:.*$/appVersion: ${{ needs.push-image.outputs.IMAGE_TAG }}/" ./helm/online-store/Chart.yaml
           echo "${{ secrets.HELM_VALUES }}" | base64 -d > ./helm/online-store/values.yaml
           helm upgrade --wait --timeout 300s  -i online-store -f ./helm/online-store/values.yaml --set app.image.tag=${{ needs.push-image.outputs.IMAGE_TAG }} --set app.image.name=${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }} ./helm/online-store
       - name: Create Release

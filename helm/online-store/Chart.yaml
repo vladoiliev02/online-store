@@ -1,6 +1,7 @@
 apiVersion: v2
 name: online-store
 version: 0.1.0
+appVersion: 1.0.0
 type: application
 description: University project
 sources:
