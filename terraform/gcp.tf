@@ -16,7 +16,7 @@ variable "gcp_credentials" {
 }
 
 provider "google" {
-  credentials = var.gcp_credentials
+  credentials = file("gcp-service-account.json")
   project     = var.project_id
   region      = var.region
 }
@@ -70,94 +70,10 @@ resource "google_project_iam_member" "cloud_sql_proxy_permission" {
 }
 
 resource "google_container_cluster" "project_cluster" {
-  database_encryption {
-    state = "DECRYPTED"
-  }
-
-  datapath_provider   = "ADVANCED_DATAPATH"
-  deletion_protection = false
-
-  default_snat_status {
-    disabled = false
-  }
-
-  dns_config {
-    cluster_dns        = "CLOUD_DNS"
-    cluster_dns_domain = "cluster.local"
-    cluster_dns_scope  = "CLUSTER_SCOPE"
-  }
-
-  enable_autopilot = true
-
-  location = var.region
-
-  logging_config {
-    enable_components = ["SYSTEM_COMPONENTS", "WORKLOADS"]
-  }
-
-  master_auth {
-    client_certificate_config {
-      issue_client_certificate = false
-    }
-  }
-
-  monitoring_config {
-    enable_components = ["SYSTEM_COMPONENTS"]
-
-    managed_prometheus {
-      enabled = true
-    }
-  }
-
   name = "project-cluster"
-
-  node_config {
-    disk_size_gb = 100
-    disk_type    = "pd-standard"
-    image_type   = "COS_CONTAINERD"
-    machine_type = "e2-small"
-
-    metadata = {
-      disable-legacy-endpoints = "true"
-    }
-
-    oauth_scopes    = ["https://www.googleapis.com/auth/devstorage.read_only", "https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/monitoring", "https://www.googleapis.com/auth/service.management.readonly", "https://www.googleapis.com/auth/servicecontrol", "https://www.googleapis.com/auth/trace.append"]
-    service_account = "default"
-
-    shielded_instance_config {
-      enable_integrity_monitoring = true
-      enable_secure_boot          = true
-    }
-
-    taint {
-      effect = "NO_SCHEDULE"
-      key    = "cloud.google.com/gke-quick-remove"
-      value  = "true"
-    }
-  }
-
-  node_locations = ["${var.region}-a", "${var.region}-b", "${var.region}-c"]
-
-  notification_config {
-    pubsub {
-      enabled = false
-    }
-  }
-
-  private_cluster_config {
-    enable_private_endpoint = false
-
-    master_global_access_config {
-      enabled = false
-    }
-  }
-
+  location = var.region
   project = var.project_id
-
-  release_channel {
-    channel = "REGULAR"
-  }
-
+  enable_autopilot = true
 }
 
 resource "google_compute_global_address" "project_ip" {

@@ -130,35 +130,35 @@ jobs:
           docker push ${{ vars.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           docker logout
 
-  # terrafrom:
-  #   name: Terraform
-  #   needs: [push-image]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #     - name: Terraform Init
-  #       working-directory: ./terraform
-  #       run: terraform init
-  #     - name: Terraform Refresh
-  #       working-directory: ./terraform
-  #       run: terraform refresh
-  #       env:
-  #         TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
-  #     - name: Terraform Plan
-  #       working-directory: ./terraform
-  #       run: terraform plan -input=false
-  #       env:
-  #         TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
-  #     - name: Terraform Apply
-  #       working-directory: ./terraform
-  #       run: terraform apply -auto-approve -input=false
-  #       env:
-  #         TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
+  terrafrom:
+    name: Terraform
+    needs: [push-image]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init
+      - name: Terraform Refresh
+        working-directory: ./terraform
+        run: terraform refresh
+        env:
+          TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
+      - name: Terraform Plan
+        working-directory: ./terraform
+        run: terraform plan -input=false
+        env:
+          TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve -input=false
+        env:
+          TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
 
   deploy:
     name: Deploy to GKE
-    needs: [push-image] # CHANGE THIS TO TERRAFORM
+    needs: [terrafrom]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -1,7 +1,7 @@
 {
   "version": 4,
   "terraform_version": "1.6.6",
-  "serial": 34,
+  "serial": 32,
   "lineage": "499f5267-a531-7225-3fe8-b881585bc703",
   "outputs": {},
   "resources": [
@@ -320,7 +320,13 @@
                 "sole_tenant_config": [],
                 "spot": false,
                 "tags": [],
-                "taint": [],
+                "taint": [
+                  {
+                    "effect": "NO_SCHEDULE",
+                    "key": "cloud.google.com/gke-quick-remove",
+                    "value": "true"
+                  }
+                ],
                 "workload_metadata_config": [
                   {
                     "mode": "GKE_METADATA"
@@ -1179,12 +1185,7 @@
             ],
             "services_ipv4_cidr": "34.118.224.0/20",
             "subnetwork": "projects/go-course-project-409711/regions/europe-central2/subnetworks/default",
-            "timeouts": {
-              "create": null,
-              "delete": null,
-              "read": null,
-              "update": null
-            },
+            "timeouts": null,
             "tpu_ipv4_cidr_block": "",
             "vertical_pod_autoscaling": [
               {
