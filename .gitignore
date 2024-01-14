@@ -27,4 +27,4 @@ go.work
 .vscode
 
 terraform/gcp-service-account.json
-helm/online-store/values.yaml
+helm/online-store/*values.yaml
