@@ -83,7 +83,7 @@ jobs:
 
   sonar-cloud-sast:
     name: Sonar Cloud SAST
-    needs: [database-tests, unit-tests]
+    needs: ["editorconfig-checker", "markdown-lint", "git-leaks"]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -96,7 +96,7 @@ jobs:
 
   snyk-sca:
     name: Snyk SCA
-    needs: [database-tests, unit-tests]
+    needs: ["editorconfig-checker", "markdown-lint", "git-leaks"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
