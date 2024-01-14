@@ -38,6 +38,10 @@ spec:
             name: {{ .Values.app.config.name }}
         - secretRef:
             name: {{ .Values.app.secret.name }}
+        startupProbe:
+          httpGet:
+            path: {{ .Values.app.probes.readiness }}
+            port: {{ .Values.app.port.number }}
         readinessProbe:
           httpGet:
             path: {{ .Values.app.probes.readiness }}
