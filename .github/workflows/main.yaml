@@ -107,7 +107,7 @@ jobs:
 
   push-image:
     name: Scan and Push Image
-    needs: [sonar-cloud-sast, snyk-sca]
+    needs: [sonar-cloud-sast, snyk-sca, database-tests, unit-tests]
     runs-on: ubuntu-latest
     outputs:
       IMAGE_TAG: ${{ steps.set-version.outputs.IMAGE_TAG }}
