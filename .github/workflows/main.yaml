@@ -144,14 +144,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GOOGLE_CREDENTIALS }}
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init
-      - name: Terraform Refresh
-        working-directory: ./terraform
-        run: terraform refresh
-        env:
-          TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
+      - name: Download State from Bucket
+        run: gsutil cp gs://terraform-state-project/terraform.tfstate .
       - name: Terraform Plan
         working-directory: ./terraform
         run: terraform plan -input=false
@@ -162,6 +164,8 @@ jobs:
         run: terraform apply -auto-approve -input=false
         env:
           TF_VAR_gcp_credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
+      - name: Upload State to Bucket
+        run: gsutil cp ./terraform.tfstate gs://terraform-state-project/terraform.tfstate
 
   flyway-migrate:
     name: Flyway Migrate

@@ -27,4 +27,7 @@ go.work
 .vscode
 
 terraform/gcp-service-account.json
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate*
+
 helm/online-store/*values.yaml

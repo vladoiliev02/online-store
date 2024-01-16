@@ -101,4 +101,8 @@ resource "google_dns_record_set" "frontend" {
   rrdatas = [google_compute_global_address.project_ip.address]
 }
 
-
+resource "google_storage_bucket" "terraform_state" {
+  name          = "terraform-state-project"
+  location      = var.region
+  storage_class = "STANDARD"
+}
