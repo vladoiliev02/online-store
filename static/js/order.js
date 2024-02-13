@@ -75,6 +75,9 @@ window.onload = function () {
                                             }).then(response => {
                                                 if (response.ok) {
                                                     productsDiv.removeChild(productDiv);
+                                                    if (productsDiv.children.length === 0) {
+                                                        document.getElementById('buy').style.display = 'none';
+                                                    }
                                                 }
                                             });
                                         });
@@ -87,9 +90,13 @@ window.onload = function () {
 
                         const buyButton = document.getElementById('buy');
 
+                        console.log(order)
                         if (order.status != 1) {
                             buyButton.style.display = 'none';
                         }else {
+                            if (order.products.length == 0) {
+                                buyButton.style.display = 'none';
+                            }
                             const purchaseButton = document.getElementById('purchase');
                             const purchaseModal = document.getElementById('purchaseModal');
                             const cancelButton = document.getElementById('cancel');

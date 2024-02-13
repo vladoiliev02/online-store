@@ -88,9 +88,30 @@ window.onload = function () {
                                         }),
                                     }).then(response => {
                                         if (response.ok) {
-                                            const p = document.createElement('p')
-                                            p.innerHTML = 'Success'
-                                            document.getElementById('addToCartDiv').appendChild(p)
+                                            const div = document.createElement('div');
+                                            div.style.backgroundColor = '#DFF0D8';
+                                            div.style.position = 'fixed';
+                                            div.style.top = '50%';
+                                            div.style.left = '50%';
+                                            div.style.transform = 'translate(-50%, -50%)';
+                                            div.style.padding = '20px';
+                                            div.style.textAlign = 'center';
+                                            div.style.width = '200px';
+                                            div.style.height = '100px';
+                                            div.style.borderRadius = '20px';
+                                            div.style.display = 'flex';
+                                            div.style.justifyContent = 'center';
+                                            div.style.alignItems = 'center';
+                                            div.style.fontSize = '24px';
+
+                                            const text = document.createTextNode('Success');
+                                            div.appendChild(text);
+
+                                            document.body.appendChild(div);
+
+                                            setTimeout(function () {
+                                                document.body.removeChild(div);
+                                            }, 1000);
                                         }
                                     });
                                 })

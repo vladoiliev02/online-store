@@ -12,6 +12,7 @@ func Init(router chi.Router) {
 	router.Get("/store/products/{productId}", serveFile("static/product.html"))
 	router.Get("/store/users/{userId}", serveFile("static/user.html"))
 	router.Get("/store/orders/{orderId}", serveFile("static/order.html"))
+	router.Get("/store/login", serveFile("static/login.html"))
 	router.Mount("/store", http.StripPrefix("/store/", fs))
 }
 

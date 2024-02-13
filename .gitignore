@@ -31,3 +31,7 @@ terraform/.terraform.lock.hcl
 terraform/terraform.tfstate*
 
 helm/online-store/*values.yaml
+
+/online-store
+
+/__debug*

@@ -10,7 +10,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"strconv"
 	"time"
 
 	"github.com/vladoiliev02/online-store/controller"
@@ -71,6 +70,8 @@ func (sc *SecurityConfiguration) ConfigureRouter(r chi.Router) {
 				sc.oauthConfig.LogoutPath: {},
 				"/api/v1/liveness":        {},
 				"/api/v1/readiness":       {},
+				"/store/login":            {},
+				"/login":                  {},
 			}
 
 			if _, found := noAuthPaths[r.URL.Path]; !found {
@@ -83,6 +84,7 @@ func (sc *SecurityConfiguration) ConfigureRouter(r chi.Router) {
 
 	r.Get(redirectUrl.Path, sc.codeExchange)
 	r.Get(sc.oauthConfig.LogoutPath, sc.logout)
+	r.Get("/login", sc.login)
 }
 
 func (sc *SecurityConfiguration) logout(w http.ResponseWriter, r *http.Request) {
@@ -100,7 +102,37 @@ func (sc *SecurityConfiguration) logout(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	http.Redirect(w, r, sc.oauthConfig.HomePath+`?refresh=`+strconv.FormatInt(time.Now().Unix(), 10), http.StatusSeeOther)
+	http.Redirect(w, r, "/store/login", http.StatusSeeOther)
+}
+
+func (sc *SecurityConfiguration) login(w http.ResponseWriter, r *http.Request) {
+	session, err := sc.store.Get(r, sessionName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if !isAuthenticated(session) {
+		oauthStateString, err := generateRandomString(32)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		session.Values[oauthStateKey] = oauthStateString
+		session.Values[redirectBackKey] = r.URL.String()
+		err = session.Save(r, w)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		url := sc.oauthConfig.AuthCodeURL(oauthStateString, oauth2.ApprovalForce)
+		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+		return
+	} else {
+		http.Redirect(w, r, sc.oauthConfig.HomePath, http.StatusTemporaryRedirect)
+	}
 }
 
 func (sc *SecurityConfiguration) oauthCodeGrantMiddleware(next http.Handler) http.Handler {
@@ -112,22 +144,7 @@ func (sc *SecurityConfiguration) oauthCodeGrantMiddleware(next http.Handler) htt
 		}
 
 		if !isAuthenticated(session) {
-			oauthStateString, err := generateRandomString(32)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-
-			session.Values[oauthStateKey] = oauthStateString
-			session.Values[redirectBackKey] = r.URL.String()
-			err = session.Save(r, w)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-
-			url := sc.oauthConfig.AuthCodeURL(oauthStateString, oauth2.ApprovalForce)
-			http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+			http.Redirect(w, r, "/store/login", http.StatusTemporaryRedirect)
 			return
 		}
 
