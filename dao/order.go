@@ -9,7 +9,7 @@ import (
 
 const (
 	selectOrders = `
-		SELECT o.id, o.user_id, o.status, o.created_at,
+		SELECT o.id, o.user_id, o.status, o.created_at, o.latest_update,
 			a.id, a.city, a.country, a.address, a.postal_code
 		FROM orders o
 		LEFT JOIN addresses a ON a.id = o.address_id
@@ -29,7 +29,7 @@ const (
 
 	updateOrder = `
 		UPDATE orders
-		SET status = $1, address_id = $2, latest_update = CURRENT_TIMESTAMP
+		SET status = $1, address_id = $2, latest_update = NOW()
 		WHERE id = $3
 		RETURNING id, created_at, latest_update
 	`
@@ -302,7 +302,7 @@ func (o *OrderDAO) GetCart(userID int64) (*model.Order, error) {
 func scanOrder(row rowScanner) (*model.Order, error) {
 	var order model.Order
 	return propertyScanner(&order,
-		&order.ID, &order.UserID, &order.Status, &order.CreatedAt,
+		&order.ID, &order.UserID, &order.Status, &order.CreatedAt, &order.LatestUpdate,
 		&order.Address.ID, &order.Address.City, &order.Address.Country, &order.Address.Address, &order.Address.PostalCode)(row)
 }
 

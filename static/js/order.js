@@ -26,10 +26,10 @@ window.onload = function () {
                                         display: flex;
                                         flex-direction: column;
                                     `;
+                                    console.log(order)
                                     document.getElementById('orderId').textContent = order.id;
                                     document.getElementById('orderStatus').textContent = orderStatus[order.status];
                                     document.getElementById('orderAddress').textContent = `${order.address.city}, ${order.address.country}, ${order.address.address}, ${order.address.postalCode}`;
-                                    document.getElementById('orderCreatedAt').textContent = new Date(order.createdAt).toLocaleString();
                                     document.getElementById('orderLatestUpdate').textContent = new Date(order.latestUpdate).toLocaleString();
 
                                     document.getElementById('invoiceId').textContent = invoice.id;
